@@ -70,6 +70,27 @@ namespace Minitale.Player {
             WorldGenerator.generator.GenerateChunkAt(x - 1, 0f, z + 1);
             WorldGenerator.generator.GenerateChunkAt(x, 0f, z + 1);
             WorldGenerator.generator.GenerateChunkAt(x + 1, 0f, z + 1);
+
+            //Hide
+            //Left
+            WorldGenerator.GetChunkAt(x - 2, 0f, z - 1).RenderChunk(false);
+            WorldGenerator.GetChunkAt(x - 2, 0f, z).RenderChunk(false);
+            WorldGenerator.GetChunkAt(x - 2, 0f, z + 1).RenderChunk(false);
+
+            //Right
+            WorldGenerator.GetChunkAt(x + 2, 0f, z - 1).RenderChunk(false);
+            WorldGenerator.GetChunkAt(x + 2, 0f, z).RenderChunk(false);
+            WorldGenerator.GetChunkAt(x + 2, 0f, z + 1).RenderChunk(false);
+
+            //Bottom
+            WorldGenerator.GetChunkAt(x - 1, 0f, z - 2).RenderChunk(false);
+            WorldGenerator.GetChunkAt(x, 0f, z - 2).RenderChunk(false);
+            WorldGenerator.GetChunkAt(x + 1, 0f, z - 2).RenderChunk(false);
+
+            //Top
+            WorldGenerator.GetChunkAt(x - 1, 0f, z + 2).RenderChunk(false);
+            WorldGenerator.GetChunkAt(x, 0f, z + 2).RenderChunk(false);
+            WorldGenerator.GetChunkAt(x + 1, 0f, z + 2).RenderChunk(false);
         }
 
         public string ChunkCoords()

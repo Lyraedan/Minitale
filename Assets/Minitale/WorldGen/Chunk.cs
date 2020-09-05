@@ -14,7 +14,6 @@ namespace Minitale.WorldGen
         public static int chunkWidth = 16; // 100 is really detailed but really laggy
         public static int chunkHeight = 16; // 100 is really detailed but relly laggy
         public TileList tiles;
-        public GameObject tile;
         public float scale = 0.1f;
 
         private Dictionary<string, TileData> tileCache = new Dictionary<string, TileData>();
@@ -28,17 +27,19 @@ namespace Minitale.WorldGen
             {
                 for(int z = 0; z < chunkHeight; z++)
                 {
-                    string key = $"Tile_{x}_{z}"; ;
-                    GameObject tile = Instantiate(this.tile, new Vector3(transform.position.x + (x * WorldGenerator.PLANE_SCALE), transform.position.y, transform.position.z + (z * WorldGenerator.PLANE_SCALE)), Quaternion.identity);
+                    string key = $"Tile_{x}_{z}";
+                    int chosen = Random.Range(0, tiles.tiles.Length);
+                    Tile t = tiles.tiles[chosen];
+                    Vector3 spawn = new Vector3(transform.position.x + (x * WorldGenerator.PLANE_SCALE), transform.position.y, transform.position.z + (z * WorldGenerator.PLANE_SCALE));
+                    GameObject tile = Instantiate(t.prefab, spawn, Quaternion.identity);
                     tile.name = key;
                     tile.transform.SetParent(transform);
 
                     //Setup tile from tilelist
                     Renderer tileRenderer = tile.GetComponent<Renderer>();
-                    int chosen = Random.Range(0, tiles.tiles.Length);
-                    tileRenderer.material.mainTexture = tiles.tiles[chosen].texture;
+                    tileRenderer.material.mainTexture = t.texture;
 
-                    tileCache.Add(key, new TileData().SetTile(chosen).SetRenderer(tileRenderer));
+                    tileCache.Add(key, new TileData().SetTile(chosen).SetRenderer(tileRenderer).SetPrefab(t.prefab).SetPosition(spawn).SetWorldObject(tile).SetKey(key));
                 }
             }
             ApplyBiome();
@@ -81,11 +82,31 @@ namespace Minitale.WorldGen
                     float perlin = SimplexNoise.SimplexNoise.Generate(perlinX + seed, perlinZ + seed);
                     //Debug.Log("Noise: " + perlin);
 
-                    if (perlin <= -.25f) UpdateTileAt(x, z, 4);
-                    else if (perlin > -.25f && perlin <= 0f) UpdateTileAt(x, z, 1); // Water
-                    else if (perlin > 0 && perlin <= .25f) UpdateTileAt(x, z, 2); // Sand
-                    else if (perlin > .25f && perlin <= .6f) UpdateTileAt(x, z, 0); // Grass
-                    else if (perlin > .6f) UpdateTileAt(x, z, 3); // Stone
+                    if (perlin <= -.25f)
+                    {
+                        UpdateTileAt(x, z, 4);
+                        UpdateWorldPrefabs(x, z, 4);
+                    }
+                    else if (perlin > -.25f && perlin <= 0f)
+                    {
+                        UpdateTileAt(x, z, 1); // Water
+                        UpdateWorldPrefabs(x, z, 1);
+                    }
+                    else if (perlin > 0 && perlin <= .25f)
+                    {
+                        UpdateTileAt(x, z, 2); // Sand
+                        UpdateWorldPrefabs(x, z, 2);
+                    }
+                    else if (perlin > .25f && perlin <= .6f)
+                    {
+                        UpdateTileAt(x, z, 0); // Grass
+                        UpdateWorldPrefabs(x, z, 0);
+                    }
+                    else if (perlin > .6f)
+                    {
+                        UpdateTileAt(x, z, 3); // Stone
+                        UpdateWorldPrefabs(x, z, 3);
+                    }
                 }
             }
         }
@@ -96,6 +117,19 @@ namespace Minitale.WorldGen
         public void BakeNav()
         {
 
+        }
+
+        public void UpdateWorldPrefabs(float x, float z, int next)
+        {
+            TileData tileAt = GetTileAt(x, z);
+            GameObject spawn = tiles.tiles[next].prefab;
+            Destroy(tileAt.worldObject);
+            GameObject tile = Instantiate(spawn, tileAt.position, Quaternion.identity);
+            tile.name = tileAt.key;
+            tile.transform.SetParent(transform);
+            tileAt.worldObject = tile;
+            tileAt.renderer = tile.GetComponent<Renderer>();
+            tileAt.renderer.material.mainTexture = tiles.tiles[next].texture;
         }
 
         public void UpdateTileAt(float x, float z, int next)
@@ -114,8 +148,12 @@ namespace Minitale.WorldGen
     public class TileData
     {
 
+        public GameObject worldObject;
+        public GameObject prefab;
+        public Vector3 position;
         public int tile;
         public Renderer renderer;
+        public string key;
 
         public TileData SetTile(int tile)
         {
@@ -126,6 +164,30 @@ namespace Minitale.WorldGen
         public TileData SetRenderer(Renderer renderer)
         {
             this.renderer = renderer;
+            return this;
+        }
+
+        public TileData SetPrefab(GameObject gameObject)
+        {
+            this.prefab = gameObject;
+            return this;
+        }
+
+        public TileData SetPosition(Vector3 position)
+        {
+            this.position = position;
+            return this;
+        }
+
+        public TileData SetWorldObject(GameObject gameObject)
+        {
+            this.worldObject = gameObject;
+            return this;
+        }
+
+        public TileData SetKey(string key)
+        {
+            this.key = key;
             return this;
         }
     }

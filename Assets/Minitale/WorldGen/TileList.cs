@@ -17,6 +17,7 @@ namespace Minitale.WorldGen
 
         public string name;
         public int id;
+        public GameObject prefab;
         public Texture2D texture;
 
     }

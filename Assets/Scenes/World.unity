@@ -136,10 +136,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 490745805}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6fea893a99ba54143a1791a5b3044bb0, type: 3}
+  m_Script: {fileID: 11500000, guid: b9a994d8638a42d4eabf3cda225eb655, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movementSpeed: 15
+  Up: 119
+  Left: 97
+  Down: 115
+  Right: 100
+  movementSpeed: 150
 --- !u!1 &569291532
 GameObject:
   m_ObjectHideFlags: 0
@@ -216,7 +220,7 @@ PrefabInstance:
     - target: {fileID: 4488616402743878081, guid: 8a412a5c2a8f39e43bfd44d2e4429f5a,
         type: 3}
       propertyPath: seed
-      value: 654
+      value: 234
       objectReference: {fileID: 0}
     - target: {fileID: 7604566514254599285, guid: 8a412a5c2a8f39e43bfd44d2e4429f5a,
         type: 3}

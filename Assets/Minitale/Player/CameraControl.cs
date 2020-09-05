@@ -91,6 +91,14 @@ namespace Minitale.Player {
             WorldGenerator.GetChunkAt(x - 1, 0f, z + 2).RenderChunk(false);
             WorldGenerator.GetChunkAt(x, 0f, z + 2).RenderChunk(false);
             WorldGenerator.GetChunkAt(x + 1, 0f, z + 2).RenderChunk(false);
+
+            //Corners
+            WorldGenerator.GetChunkAt(x - 2, 0f, z + 2).RenderChunk(false);
+            WorldGenerator.GetChunkAt(x + 2, 0f, z + 2).RenderChunk(false);
+            WorldGenerator.GetChunkAt(x - 2, 0f, z - 2).RenderChunk(false);
+            WorldGenerator.GetChunkAt(x + 2, 0f, z - 2).RenderChunk(false);
+
+
         }
 
         public string ChunkCoords()

@@ -12,7 +12,7 @@ namespace Minitale.Player
         public KeyCode Down = KeyCode.S;
         public KeyCode Right = KeyCode.D;
 
-        public float movementSpeed = 50f; // 30 seems good for a player speed
+        public float movementSpeed = 15f;
 
         // Start is called before the first frame update
         private void Start()

@@ -1,7 +1,4 @@
-﻿using Boo.Lang.Environments;
-using Minitale.WorldGen;
-using System.Collections;
-using System.Collections.Generic;
+﻿using Minitale.WorldGen;
 using UnityEngine;
 
 namespace Minitale.Player

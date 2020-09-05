@@ -11,8 +11,8 @@ namespace Minitale.WorldGen
     {
 
         //Swapping out biome enum for biome grid
-        public static int chunkWidth = 16;
-        public static int chunkHeight = 16;
+        public static int chunkWidth = 16; // 100 is really detailed but really laggy
+        public static int chunkHeight = 16; // 100 is really detailed but relly laggy
         public TileList tiles;
         public GameObject tile;
         public float scale = 0.1f;
@@ -44,6 +44,18 @@ namespace Minitale.WorldGen
             ApplyBiome();
             Smooth(seed);
             BakeNav();
+            RenderChunk(false);
+        }
+
+        public void RenderChunk(bool state)
+        {
+            for (int x = 0; x < chunkWidth; x++)
+            {
+                for (int z = 0; z < chunkHeight; z++)
+                {
+                    GetTileAt(x, z).renderer.enabled = state;
+                }
+            }
         }
 
         /// <summary>
@@ -66,10 +78,11 @@ namespace Minitale.WorldGen
                 {
                     float perlinX = (transform.position.x + (x * WorldGenerator.PLANE_SCALE)) / chunkWidth * scale;
                     float perlinZ = (transform.position.z + (z * WorldGenerator.PLANE_SCALE)) / chunkHeight * scale;
-                    float perlin = SimplexNoise.SimplexNoise.Generate(perlinX + seed, perlinZ + seed); //Mathf.PerlinNoise(perlinX + seed, perlinZ + seed);
-                    Debug.Log("Noise: " + perlin);
+                    float perlin = SimplexNoise.SimplexNoise.Generate(perlinX + seed, perlinZ + seed);
+                    //Debug.Log("Noise: " + perlin);
 
-                    if (perlin <= 0f) UpdateTileAt(x, z, 1); // Water
+                    if (perlin <= -.25f) UpdateTileAt(x, z, 4);
+                    else if (perlin > -.25f && perlin <= 0f) UpdateTileAt(x, z, 1); // Water
                     else if (perlin > 0 && perlin <= .25f) UpdateTileAt(x, z, 2); // Sand
                     else if (perlin > .25f && perlin <= .6f) UpdateTileAt(x, z, 0); // Grass
                     else if (perlin > .6f) UpdateTileAt(x, z, 3); // Stone
@@ -87,21 +100,18 @@ namespace Minitale.WorldGen
 
         public void UpdateTileAt(float x, float z, int next)
         {
-            TileData tileAt = tileCache[$"Tile_{x}_{z}"];
+            TileData tileAt = GetTileAt(x, z);
             tileAt.tile = next;
             tileAt.renderer.material.mainTexture = tiles.tiles[next].texture;
         }
 
-#if UNITY_EDITOR
-        private void OnDrawGizmos()
-        {
-            Gizmos.color = Color.green;
-            Gizmos.DrawCube(new Vector3(transform.position.x + (Chunk.chunkWidth * WorldGenerator.PLANE_SCALE) / 2, transform.position.y, transform.position.z + (Chunk.chunkWidth * WorldGenerator.PLANE_SCALE) / 2), new Vector3());
-        }
-#endif
+        public TileData GetTileAt(float x, float z) {
+            return tileCache[$"Tile_{x}_{z}"];
+        } 
+
     }
 
-    internal class TileData
+    public class TileData
     {
 
         public int tile;

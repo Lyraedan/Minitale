@@ -7,7 +7,7 @@ namespace Minitale.Player
     public class TitleCamera : CameraControl
     {
 
-        public float movementSpeed;
+        public float movementSpeed = 15f;
 
         // Start is called before the first frame update
         void Start()

@@ -127,7 +127,7 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 4664950946349624713}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &490745807
+--- !u!114 &490745806
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

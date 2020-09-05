@@ -20,6 +20,9 @@ namespace Minitale.WorldGen
         public GameObject tree;
         public GameObject grass;
 
+        [Header("Networking")]
+        public GameObject playerSpawn;
+
         private Dictionary<string, TileData> tileCache = new Dictionary<string, TileData>();
 
         /// <summary>
@@ -58,7 +61,6 @@ namespace Minitale.WorldGen
             ApplyBiome();
             Smooth(seed);
             PlantFoilage();
-
             BakeNav();
             RenderChunk(false);
         }
@@ -84,6 +86,9 @@ namespace Minitale.WorldGen
 
         }
 
+        /// <summary>
+        /// Populate the terrian with trees, grass, flowers
+        /// </summary>
         public void PlantFoilage()
         {
             for(int x = 0; x < chunkWidth; x++)
@@ -148,6 +153,56 @@ namespace Minitale.WorldGen
         {
 
         }
+
+        /// <summary>
+        /// Networking - Place Mirror spawn points for players
+        /// </summary>
+        public void PlaceSpawns()
+        {
+            List<Transform> spawns = new List<Transform>();
+            for(int x = 0; x < chunkWidth; x++)
+            {
+                for(int z = 0; z < chunkHeight; z++)
+                {
+                    bool placeSpawn = Random.value > 0.7f;
+                    if(placeSpawn)
+                    {
+                        TileData tile = GetTileAt(x, z);
+                        if(tile.worldObject.transform.childCount < 1)
+                        {
+                            // This tile is clear add a spawn
+                            GameObject spawn = Instantiate(playerSpawn, tile.worldObject.transform);
+                            spawn.name = "Player_Spawn";
+                            spawn.transform.SetParent(tile.worldObject.transform);
+                            spawns.Add(tile.worldObject.transform);
+                        }
+                    }
+                }
+            }
+
+            // No spawns were made?!
+            if(spawns.Count < 1)
+            {
+                for (int x = 0; x < chunkWidth; x++)
+                {
+                    for (int z = 0; z < chunkHeight; z++)
+                    {
+                        TileData tile = GetTileAt(x, z);
+                        if(tile.tile == 0) // grass
+                        {
+                            if (tile.worldObject.transform.childCount < 1)
+                            {
+                                GameObject spawn = Instantiate(playerSpawn, tile.worldObject.transform);
+                                spawn.name = "Player_Spawn";
+                                spawn.transform.SetParent(tile.worldObject.transform);
+                                spawns.Add(tile.worldObject.transform);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
 
         public void UpdateWorldPrefabs(float x, float z, int next)
         {

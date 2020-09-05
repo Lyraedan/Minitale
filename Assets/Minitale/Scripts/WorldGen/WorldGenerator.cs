@@ -33,12 +33,6 @@ namespace Minitale.WorldGen
             if (seed == 0) seed = (int) UnityEngine.Random.value; //SimplexNoise.SimplexNoise.Seed;
         }
 
-        // Update is called once per frame
-        void Update()
-        {
-
-        }
-
         public void GenerateChunkAt(Vector3 location)
         {
             GenerateChunkAt(location.x, location.y, location.z);
@@ -56,6 +50,7 @@ namespace Minitale.WorldGen
 
             Chunk c = chunk.GetComponent<Chunk>();
             c.GenerateChunk(seed);
+            if (x == 0 && z == 0) c.PlaceSpawns();
         }
 
         public static Chunk GetChunkAt(Vector3 location)

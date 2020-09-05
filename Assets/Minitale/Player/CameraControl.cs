@@ -24,12 +24,6 @@ namespace Minitale.Player {
             MakeChunksAroundMeVisible();
         }
 
-        public void HideOffscreenChunks()
-        {
-            float x = ChunkX();
-            float z = ChunkZ();
-        }
-
         public void MakeChunksAroundMeVisible()
         {
             float x = ChunkX();
@@ -99,11 +93,6 @@ namespace Minitale.Player {
             WorldGenerator.GetChunkAt(x + 2, 0f, z - 2).RenderChunk(false);
 
 
-        }
-
-        public string ChunkCoords()
-        {
-            return $"{ChunkX()}_{ChunkZ()}";
         }
 
         float ChunkX()

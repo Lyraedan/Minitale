@@ -16,6 +16,9 @@ namespace Minitale.WorldGen
         public TileList tiles;
         public float scale = 0.1f;
 
+        [Header("Foilage")]
+        public GameObject tree;
+
         private Dictionary<string, TileData> tileCache = new Dictionary<string, TileData>();
 
         /// <summary>
@@ -53,6 +56,8 @@ namespace Minitale.WorldGen
             }
             ApplyBiome();
             Smooth(seed);
+            PlantTrees();
+
             BakeNav();
             RenderChunk(false);
         }
@@ -63,7 +68,9 @@ namespace Minitale.WorldGen
             {
                 for (int z = 0; z < chunkHeight; z++)
                 {
-                    GetTileAt(x, z).renderer.enabled = state;
+                    //GetTileAt(x, z).renderer.enabled = state;
+                    // I don't know about this solution
+                    GetTileAt(x, z).worldObject.SetActive(state);
                 }
             }
         }
@@ -74,6 +81,27 @@ namespace Minitale.WorldGen
         public void ApplyBiome()
         {
 
+        }
+
+        public void PlantTrees()
+        {
+            for(int x = 0; x < chunkWidth; x++)
+            {
+                for(int z = 0; z < chunkHeight; z++)
+                {
+                    bool doPlant = UnityEngine.Random.value > 0.7f;
+                    if(doPlant)
+                    {
+                        TileData tile = GetTileAt(x, z);
+                        if (tile.tile == 0) // Grass
+                        {
+                            GameObject tree = Instantiate(this.tree, tile.worldObject.transform.position, Quaternion.identity);
+                            tree.name = "Foilage_Tree";
+                            tree.transform.SetParent(tile.worldObject.transform);
+                        }
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -125,6 +153,7 @@ namespace Minitale.WorldGen
                 animator.randomiseStartingIndex = t.randomIndex;
                 animator.Init();
             }
+            tileAt.tile = next;
             tileAt.worldObject = tile;
             tileAt.renderer = tile.GetComponent<Renderer>();
             tileAt.renderer.material.mainTexture = t.texture;

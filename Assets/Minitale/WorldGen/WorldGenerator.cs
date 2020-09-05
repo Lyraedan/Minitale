@@ -28,8 +28,9 @@ namespace Minitale.WorldGen
             DestroyImmediate(GetComponent<MeshFilter>());
             DestroyImmediate(GetComponent<Renderer>());
 
+            UnityEngine.Random.InitState(UnityEngine.Random.Range(int.MinValue, int.MaxValue));
             //SimplexNoise.SimplexNoise.Seed = seed;
-            if (seed == 0) seed = UnityEngine.Random.Range(0, 100000); //SimplexNoise.SimplexNoise.Seed;
+            if (seed == 0) seed = (int) UnityEngine.Random.value; //SimplexNoise.SimplexNoise.Seed;
         }
 
         // Update is called once per frame

@@ -89,7 +89,7 @@ namespace Minitale.WorldGen
             {
                 for(int z = 0; z < chunkHeight; z++)
                 {
-                    bool doPlant = UnityEngine.Random.value > 0.7f;
+                    bool doPlant = UnityEngine.Random.value > 0.85f;
                     if(doPlant)
                     {
                         TileData tile = GetTileAt(x, z);

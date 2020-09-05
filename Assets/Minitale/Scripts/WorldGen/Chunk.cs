@@ -72,7 +72,6 @@ namespace Minitale.WorldGen
                 for (int z = 0; z < chunkHeight; z++)
                 {
                     //GetTileAt(x, z).renderer.enabled = state;
-                    // I don't know about this solution
                     GetTileAt(x, z).worldObject.SetActive(state);
                 }
             }
@@ -141,7 +140,7 @@ namespace Minitale.WorldGen
                     else if (perlin > -.25f && perlin <= 0f) UpdateWorldPrefabs(x, z, 1); //Water
                     else if (perlin > 0 && perlin <= .25f) UpdateWorldPrefabs(x, z, 2); // Sand
                     else if (perlin > .25f && perlin <= .6f) UpdateWorldPrefabs(x, z, 0); // Grass
-                    else if (perlin > .6f) UpdateWorldPrefabs(x, z, 3); // Stone
+                    else if (perlin > .6f) UpdateWorldPrefabs(x, z, 3, 5f); // Stone
                 }
             }
         }
@@ -173,7 +172,8 @@ namespace Minitale.WorldGen
                             if (tile.worldObject.transform.childCount < 1)
                             {
                                 // This tile is clear add a spawn
-                                GameObject spawn = Instantiate(playerSpawn, tile.worldObject.transform);
+                                Vector3 point = new Vector3(tile.worldObject.transform.position.x, tile.worldObject.transform.position.y + 5, tile.worldObject.transform.position.z);
+                                GameObject spawn = Instantiate(playerSpawn, point, Quaternion.identity);
                                 spawn.name = "Player_Spawn";
                                 spawn.transform.SetParent(tile.worldObject.transform);
                                 spawns.Add(tile.worldObject.transform);
@@ -195,7 +195,8 @@ namespace Minitale.WorldGen
                         {
                             if (tile.worldObject.transform.childCount < 1)
                             {
-                                GameObject spawn = Instantiate(playerSpawn, tile.worldObject.transform);
+                                Vector3 point = new Vector3(tile.worldObject.transform.position.x, tile.worldObject.transform.position.y + 5, tile.worldObject.transform.position.z);
+                                GameObject spawn = Instantiate(playerSpawn, point, Quaternion.identity);
                                 spawn.name = "Player_Spawn";
                                 spawn.transform.SetParent(tile.worldObject.transform);
                                 spawns.Add(tile.worldObject.transform);
@@ -207,13 +208,14 @@ namespace Minitale.WorldGen
         }
 
 
-        public void UpdateWorldPrefabs(float x, float z, int next)
+        public void UpdateWorldPrefabs(float x, float z, int next, float yOffset = 0f)
         {
             TileData tileAt = GetTileAt(x, z);
             Tile t = tiles.tiles[next];
             GameObject spawn = t.prefab;
             Destroy(tileAt.worldObject);
-            GameObject tile = Instantiate(spawn, tileAt.position, Quaternion.identity);
+            Vector3 placeAt = new Vector3(tileAt.position.x, tileAt.position.y + yOffset, tileAt.position.z);
+            GameObject tile = Instantiate(spawn, placeAt, Quaternion.identity);
             tile.name = tileAt.key;
             tile.transform.SetParent(transform);
             if (t.animated)

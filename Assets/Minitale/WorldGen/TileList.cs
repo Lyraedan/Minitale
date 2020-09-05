@@ -15,10 +15,15 @@ namespace Minitale.WorldGen
     [System.Serializable]
     public class Tile {
 
+        [Header("Base")]
         public string name;
         public int id;
         public GameObject prefab;
         public Texture2D texture;
-
+        [Header("Animation")]
+        public bool animated;
+        public bool randomIndex;
+        public float animationSkip;
+        public Texture[] frames;
     }
 }

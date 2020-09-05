@@ -35,6 +35,15 @@ namespace Minitale.WorldGen
                     tile.name = key;
                     tile.transform.SetParent(transform);
 
+                    if(t.animated)
+                    {
+                        AnimationPlayer animator = tile.AddComponent<AnimationPlayer>();
+                        animator.frames = t.frames;
+                        animator.delay = t.animationSkip;
+                        animator.randomiseStartingIndex = t.randomIndex;
+                        animator.Init();
+                    }
+
                     //Setup tile from tilelist
                     Renderer tileRenderer = tile.GetComponent<Renderer>();
                     tileRenderer.material.mainTexture = t.texture;
@@ -102,14 +111,23 @@ namespace Minitale.WorldGen
         public void UpdateWorldPrefabs(float x, float z, int next)
         {
             TileData tileAt = GetTileAt(x, z);
-            GameObject spawn = tiles.tiles[next].prefab;
+            Tile t = tiles.tiles[next];
+            GameObject spawn = t.prefab;
             Destroy(tileAt.worldObject);
             GameObject tile = Instantiate(spawn, tileAt.position, Quaternion.identity);
             tile.name = tileAt.key;
             tile.transform.SetParent(transform);
+            if (t.animated)
+            {
+                AnimationPlayer animator = tile.AddComponent<AnimationPlayer>();
+                animator.frames = t.frames;
+                animator.delay = t.animationSkip;
+                animator.randomiseStartingIndex = t.randomIndex;
+                animator.Init();
+            }
             tileAt.worldObject = tile;
             tileAt.renderer = tile.GetComponent<Renderer>();
-            tileAt.renderer.material.mainTexture = tiles.tiles[next].texture;
+            tileAt.renderer.material.mainTexture = t.texture;
         }
 
         public void UpdateTileAt(float x, float z, int next)

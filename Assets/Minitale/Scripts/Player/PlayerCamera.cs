@@ -15,7 +15,7 @@ namespace Minitale.Player
         public float movementSpeed = 50f; // 30 seems good for a player speed
 
         // Start is called before the first frame update
-        void Start()
+        private void Start()
         {
             Init();
         }

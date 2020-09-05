@@ -7,14 +7,10 @@ namespace Minitale.Player {
     public class CameraControl : MonoBehaviour
     {
 
-        private Camera camera;
-
         // Start is called before the first frame update
         public void Init()
         {
-            camera = Camera.main;
-
-            GenerateChunksAroundMe();
+            //GenerateChunksAroundMe();
         }
 
         // Update is called once per frame

@@ -1,4 +1,7 @@
-﻿using System.Collections;
+﻿using Minitale.Utils;
+using NaughtyAttributes;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,11 +9,11 @@ namespace Minitale.WorldGen
 {
     public class WorldGenerator : MonoBehaviour
     {
-
         public static float PLANE_SCALE = 10F;
 
         public GameObject chunk;
         public Dictionary<string, GameObject> chunks = new Dictionary<string, GameObject>();
+        public int seed = 0;
 
         // Start is called before the first frame update
         void Start()
@@ -18,9 +21,11 @@ namespace Minitale.WorldGen
             DestroyImmediate(GetComponent<MeshFilter>());
             DestroyImmediate(GetComponent<Renderer>());
 
-            for(int x = 0; x < 3; x++)
+            if (seed == 0) seed = DateTime.Now.Millisecond * 10000;
+
+            for (int x = 0; x < 30; x++)
             {
-                for(int z = 0; z < 3; z++)
+                for(int z = 0; z < 30; z++)
                 {
                     GenerateChunkAt(new Vector3(x * (PLANE_SCALE * Chunk.chunkWidth), 0f, z * (PLANE_SCALE * Chunk.chunkHeight)));
                 }
@@ -41,7 +46,7 @@ namespace Minitale.WorldGen
                 {
                     Vector3 location = new Vector3(x * (PLANE_SCALE * Chunk.chunkWidth), 0f, z * (PLANE_SCALE * Chunk.chunkHeight));
                     string key = $"Chunk_{location.ToString()}";
-                    chunks[key].GetComponent<Chunk>().Smooth();
+                    chunks[key].GetComponent<Chunk>().Smooth(seed);
                 }
             }
         }
@@ -56,7 +61,7 @@ namespace Minitale.WorldGen
             chunks.Add(key, chunk);
 
             Chunk c = chunk.GetComponent<Chunk>();
-            c.GenerateChunk();
+            c.GenerateChunk(seed);
         }
     }
 }

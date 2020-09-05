@@ -46,3 +46,27 @@ MonoBehaviour:
   biome: 0
   tiles: {fileID: 11400000, guid: 37fbcffde766fb646a137f6dc0e4a519, type: 2}
   tile: {fileID: 1913017760129779345, guid: b983fa233e9e25244991f8a5b5607dfa, type: 3}
+  scale:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.9833374
+      value: 0.20517349
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4

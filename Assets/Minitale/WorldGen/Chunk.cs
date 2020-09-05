@@ -1,5 +1,6 @@
 ﻿using Minitale.Utils;
 using Minitale.WorldGen;
+using NaughtyAttributes;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,26 +10,21 @@ namespace Minitale.WorldGen
     public class Chunk : MonoBehaviour
     {
 
-        public enum Biome {
-
-            PLAINS, TUNDRA, DESERT, FOREST, OCEAN
-
-        }
-
-        public Biome biome = Biome.PLAINS;
-        public static int chunkWidth = 30;
-        public static int chunkHeight = 30;
+        //Swapping out biome enum for biome grid
+        public static int chunkWidth = 16;
+        public static int chunkHeight = 16;
         public TileList tiles;
         public GameObject tile;
+        public float scale = 0.1f;
 
         private Dictionary<string, TileData> tileCache = new Dictionary<string, TileData>();
 
         /// <summary>
         /// Generate the chunks tiles!
         /// </summary>
-        public void GenerateChunk()
+        public void GenerateChunk(int seed)
         {
-            for(int x = 0; x < chunkWidth; x++)
+            for (int x = 0; x < chunkWidth; x++)
             {
                 for(int z = 0; z < chunkHeight; z++)
                 {
@@ -45,108 +41,48 @@ namespace Minitale.WorldGen
                     tileCache.Add(key, new TileData().SetTile(chosen).SetRenderer(tileRenderer));
                 }
             }
-            Smooth();
+            ApplyBiome();
+            Smooth(seed);
+            BakeNav();
         }
 
-        public void Smooth()
+        /// <summary>
+        /// Mark a section of the world with a biome
+        /// </summary>
+        public void ApplyBiome()
+        {
+
+        }
+
+        /// <summary>
+        /// Smooth out the chunks to produce good looking terrain
+        /// </summary>
+        /// <param name="seed"></param>
+        public void Smooth(int seed)
         {
             for (int x = 0; x < chunkWidth; x++)
             {
                 for (int z = 0; z < chunkHeight; z++)
                 {
-                    /*
-                    TileData tileAt = tileCache[$"Tile_{x}_{z}"];
+                    float perlinX = (transform.position.x + (x * WorldGenerator.PLANE_SCALE)) / chunkWidth * scale;
+                    float perlinZ = (transform.position.z + (z * WorldGenerator.PLANE_SCALE)) / chunkHeight * scale;
+                    float perlin = SimplexNoise.SimplexNoise.Generate(perlinX + seed, perlinZ + seed); //Mathf.PerlinNoise(perlinX + seed, perlinZ + seed);
+                    Debug.Log("Noise: " + perlin);
 
-                    int xNegative = MathHelper.Clamp(x - 1, 0, chunkWidth);
-                    int zNegative = MathHelper.Clamp(z - 1, 0, chunkHeight);
-
-                    int xPositive = MathHelper.Clamp(x + 1, 0, chunkWidth);
-                    int zPositive = MathHelper.Clamp(z + 1, 0, chunkHeight);
-
-                    TileData tile = tileCache[$"Tile_{x}_{z}"];
-
-                    TileData tileUp = tileCache[$"Tile_{x}_{zPositive}"];
-                    TileData tileDown = tileCache[$"Tile_{x}_{zNegative}"];
-
-                    TileData tileLeft = tileCache[$"Tile_{xNegative}_{z}"];
-                    TileData tileRight = tileCache[$"Tile_{xPositive}_{z}"];
-
-                    if (tileUp.tile == tile.tile) UpdateTileAt(zPositive, z, tile.tile);
-                    if (tileDown.tile == tile.tile) UpdateTileAt(zNegative, z, tile.tile);
-
-                    if (tileLeft.tile == tile.tile) UpdateTileAt(xNegative, z, tile.tile);
-                    if (tileRight.tile == tile.tile) UpdateTileAt(xPositive, z, tile.tile);
-                    */
-
-                    /*
-                    int neighbourTiles = GetSurroundingTiles(x, z);
-
-                    if(neighbourTiles > 4)
-                    {
-                        UpdateTileAt(x, z, 1);
-                    } else if(neighbourTiles < 4)
-                    {
-                        UpdateTileAt(x, z, 0);
-                    }
-                    */
-                    //Perlin // TODO SEED
-                    float perlinX = (float) (transform.position.x + (x * WorldGenerator.PLANE_SCALE)) * 0.1f / chunkWidth;
-                    float perlinZ = (float) (transform.position.z + (z * WorldGenerator.PLANE_SCALE)) * 0.1f / chunkHeight;
-                    float perlin = Mathf.PerlinNoise(perlinX, perlinZ);
-                    Debug.Log("Perlin: " + perlin);
-                    if(perlin < .4f) UpdateTileAt(x, z, 1);
-                    else if(perlin >= .4f) UpdateTileAt(x, z, 0);
+                    if (perlin <= 0f) UpdateTileAt(x, z, 1); // Water
+                    else if (perlin > 0 && perlin <= .25f) UpdateTileAt(x, z, 2); // Sand
+                    else if (perlin > .25f && perlin <= .6f) UpdateTileAt(x, z, 0); // Grass
+                    else if (perlin > .6f) UpdateTileAt(x, z, 3); // Stone
                 }
             }
         }
 
-        int GetSurroundingTiles(int gridX, int gridZ)
+        /// <summary>
+        /// Bake the navmesh
+        /// </summary>
+        public void BakeNav()
         {
-            /*
-            int wallCount = 0;
-            for(int x = gridX - 1; x <= gridX + 1; x++)
-            {
-                for(int z = gridZ - 1; gridZ <= gridZ + 1; z++)
-                {
-                    if(x >= 0 && x < chunkWidth && z >= 0 && z < chunkHeight)
-                    {
-                        if(x != gridX || z != gridZ)
-                        {
-                            wallCount += 0;//tileCache[$"Tile_{x}_{z}"].tile;
-                        }
-                    } else
-                    {
-                        wallCount++;
-                    }
-                }
-            }
-            */
-            int wallCount = 0;
 
-            TileData tileAt = tileCache[$"Tile_{gridX}_{gridZ}"];
-
-            int xNegative = MathHelper.Clamp(gridX - 1, 0, chunkWidth);
-            int zNegative = MathHelper.Clamp(gridZ - 1, 0, chunkHeight);
-
-            int xPositive = MathHelper.Clamp(gridX + 1, 0, chunkWidth);
-            int zPositive = MathHelper.Clamp(gridZ + 1, 0, chunkHeight);
-
-            TileData tile = tileCache[$"Tile_{gridX}_{gridZ}"];
-
-            TileData tileUp = tileCache[$"Tile_{gridX}_{zPositive}"];
-            TileData tileDown = tileCache[$"Tile_{gridX}_{zNegative}"];
-
-            TileData tileLeft = tileCache[$"Tile_{xNegative}_{gridZ}"];
-            TileData tileRight = tileCache[$"Tile_{xPositive}_{gridZ}"];
-
-            if (tileUp.tile != tile.tile) wallCount++;
-            if (tileDown.tile != tile.tile) wallCount++;
-
-            if (tileLeft.tile != tile.tile) wallCount++;
-            if (tileRight.tile != tile.tile) wallCount++;
-            
-
-            return wallCount;
         }
 
         public void UpdateTileAt(float x, float z, int next)
@@ -155,6 +91,14 @@ namespace Minitale.WorldGen
             tileAt.tile = next;
             tileAt.renderer.material.mainTexture = tiles.tiles[next].texture;
         }
+
+#if UNITY_EDITOR
+        private void OnDrawGizmos()
+        {
+            Gizmos.color = Color.green;
+            Gizmos.DrawCube(new Vector3(transform.position.x + (Chunk.chunkWidth * WorldGenerator.PLANE_SCALE) / 2, transform.position.y, transform.position.z + (Chunk.chunkWidth * WorldGenerator.PLANE_SCALE) / 2), new Vector3());
+        }
+#endif
     }
 
     internal class TileData

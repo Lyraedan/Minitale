@@ -10,7 +10,7 @@ namespace Minitale.Player {
         private Camera camera;
 
         // Start is called before the first frame update
-        void Start()
+        public void Init()
         {
             camera = Camera.main;
 
@@ -18,45 +18,73 @@ namespace Minitale.Player {
         }
 
         // Update is called once per frame
-        void Update()
+        public void HandleWorld()
         {
             GenerateChunksAroundMe();
             MakeChunksAroundMeVisible();
         }
 
+        public void HideOffscreenChunks()
+        {
+            float x = ChunkX();
+            float z = ChunkZ();
+        }
+
         public void MakeChunksAroundMeVisible()
         {
-            float x = Mathf.Round(transform.position.x / (WorldGenerator.PLANE_SCALE * Chunk.chunkWidth));
-            float z = Mathf.Round(transform.position.z / (WorldGenerator.PLANE_SCALE * Chunk.chunkHeight));
+            float x = ChunkX();
+            float z = ChunkZ();
 
-            for (float xx = x - 1; xx < x + 1; xx++)
-            {
-                for(float zz = z - 1; zz < z + 1; zz++)
-                {
-                    WorldGenerator.GetChunkAt(x, z).RenderChunk(true);
-                }
-            }
+            //Top row
+            WorldGenerator.GetChunkAt(x - 1, 0f, z - 1).RenderChunk(true);
+            WorldGenerator.GetChunkAt(x, 0f, z - 1).RenderChunk(true);
+            WorldGenerator.GetChunkAt(x + 1, 0f, z - 1).RenderChunk(true);
+
+            //Middle row
+            WorldGenerator.GetChunkAt(x - 1, 0f, z).RenderChunk(true);
+            WorldGenerator.GetChunkAt(x, 0f, z).RenderChunk(true);
+            WorldGenerator.GetChunkAt(x + 1, 0f, z).RenderChunk(true);
+
+            //Bottom row
+            WorldGenerator.GetChunkAt(x - 1, 0f, z + 1).RenderChunk(true);
+            WorldGenerator.GetChunkAt(x, 0f, z + 1).RenderChunk(true);
+            WorldGenerator.GetChunkAt(x + 1, 0f, z + 1).RenderChunk(true);
         }
 
         public void GenerateChunksAroundMe()
         {
-            float x = Mathf.Round(transform.position.x / (WorldGenerator.PLANE_SCALE * Chunk.chunkWidth));
-            float z = Mathf.Round(transform.position.z / (WorldGenerator.PLANE_SCALE * Chunk.chunkHeight));
+            float x = ChunkX();
+            float z = ChunkZ();
 
-            for (float xx = x - 1; xx < x + 1; xx++)
-            {
-                for (float zz = z - 1; zz < z + 1; zz++)
-                {
-                    WorldGenerator.generator.GenerateChunkAt(xx, 0f, zz);
-                }
-            }
+            //Top row
+            WorldGenerator.generator.GenerateChunkAt(x - 1, 0f, z - 1);
+            WorldGenerator.generator.GenerateChunkAt(x, 0f, z - 1);
+            WorldGenerator.generator.GenerateChunkAt(x + 1, 0f, z - 1);
+
+            //Middle row
+            WorldGenerator.generator.GenerateChunkAt(x - 1, 0f, z);
+            WorldGenerator.generator.GenerateChunkAt(x, 0f, z);
+            WorldGenerator.generator.GenerateChunkAt(x + 1, 0f, z);
+
+            //Bottom row
+            WorldGenerator.generator.GenerateChunkAt(x - 1, 0f, z + 1);
+            WorldGenerator.generator.GenerateChunkAt(x, 0f, z + 1);
+            WorldGenerator.generator.GenerateChunkAt(x + 1, 0f, z + 1);
         }
 
         public string ChunkCoords()
         {
-            float x = Mathf.Round(transform.position.x / (WorldGenerator.PLANE_SCALE * Chunk.chunkWidth));
-            float z = Mathf.Round(transform.position.z / (WorldGenerator.PLANE_SCALE * Chunk.chunkHeight));
-            return $"{x}_{z}";
+            return $"{ChunkX()}_{ChunkZ()}";
+        }
+
+        float ChunkX()
+        {
+            return Mathf.Round(transform.position.x / (WorldGenerator.PLANE_SCALE * Chunk.chunkWidth));
+        }
+
+        float ChunkZ()
+        {
+            return Mathf.Round(transform.position.z / (WorldGenerator.PLANE_SCALE * Chunk.chunkHeight));
         }
     }
 }

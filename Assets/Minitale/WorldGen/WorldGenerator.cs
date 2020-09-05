@@ -30,16 +30,6 @@ namespace Minitale.WorldGen
 
             SimplexNoise.SimplexNoise.Seed = seed;
             if (seed == 0) seed = SimplexNoise.SimplexNoise.Seed;
-
-            /*
-            for (int x = 0; x < 6; x++)
-            {
-                for(int z = 0; z < 6; z++)
-                {
-                    GenerateChunkAt(new Vector3(x, 0f, z));
-                }
-            }
-            */
         }
 
         // Update is called once per frame
@@ -55,7 +45,7 @@ namespace Minitale.WorldGen
 
         public void GenerateChunkAt(float x, float y, float z)
         {
-            string key = $"Chunk_{x}_{z}";
+            string key = $"Chunk_{x}_{y}_{z}";
             if (chunks.ContainsKey(key)) return;
 
             GameObject chunk = Instantiate(this.chunk, new Vector3(x * (PLANE_SCALE * Chunk.chunkWidth), y, z * (PLANE_SCALE * Chunk.chunkHeight)), Quaternion.identity);
@@ -69,22 +59,24 @@ namespace Minitale.WorldGen
 
         public static Chunk GetChunkAt(Vector3 location)
         {
-            return GetChunkAt(location.x, location.z);
+            return GetChunkAt(location.x, location.y, location.z);
         }
 
-        public static Chunk GetChunkAt(float x, float z)
+        public static Chunk GetChunkAt(float x, float y, float z)
         {
-            return GetChunkAtAsGameObject(x, z).GetComponent<Chunk>();
+            return GetChunkAtAsGameObject(x, y, z).GetComponent<Chunk>();
         }
 
-        public static GameObject GetChunkAtAsGameObject(float x, float z)
+        public static GameObject GetChunkAtAsGameObject(float x, float y, float z)
         {
-            string key = $"Chunk_{x}_{z}";
-            if (!chunks.ContainsKey(key)) {
-                generator.GenerateChunkAt(new Vector3(x, 0f, z));
-                return chunks[key];
-            }
+            string key = $"Chunk_{x}_{y}_{z}";
+            if (!ChunkExistsAt(x, y, z)) generator.GenerateChunkAt(x, y, z);
             return chunks[key];
+        }
+
+        public static bool ChunkExistsAt(float x, float y, float z)
+        {
+            return chunks.ContainsKey($"Chunk_{x}_{y}_{z}");
         }
     }
 }

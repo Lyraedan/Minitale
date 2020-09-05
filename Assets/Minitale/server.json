@@ -1,0 +1,7 @@
+[
+    {
+        "ip": "localhost",
+        "port": 80,
+        "max_players": 5
+    }
+]

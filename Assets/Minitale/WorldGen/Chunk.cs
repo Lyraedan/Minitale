@@ -16,8 +16,8 @@ namespace Minitale.WorldGen
         }
 
         public Biome biome = Biome.PLAINS;
-        public static int chunkWidth = 20;
-        public static int chunkHeight = 20;
+        public static int chunkWidth = 30;
+        public static int chunkHeight = 30;
         public TileList tiles;
         public GameObject tile;
 
@@ -78,6 +78,7 @@ namespace Minitale.WorldGen
                     if (tileRight.tile == tile.tile) UpdateTileAt(xPositive, z, tile.tile);
                     */
 
+                    /*
                     int neighbourTiles = GetSurroundingTiles(x, z);
 
                     if(neighbourTiles > 4)
@@ -87,6 +88,16 @@ namespace Minitale.WorldGen
                     {
                         UpdateTileAt(x, z, 0);
                     }
+                    */
+                    //Perlin
+                    float perlinX = 1f / (transform.position.x + (x * WorldGenerator.PLANE_SCALE)) / chunkWidth;
+                    float perlinZ = 1f / (transform.position.z + (z * WorldGenerator.PLANE_SCALE)) / chunkHeight;
+                    Vector3 normalized = new Vector3(perlinX, 0f, perlinZ);
+                    normalized.Normalize();
+                    float perlin = Mathf.PerlinNoise(normalized.x, normalized.z);
+                    Debug.Log("Perlin: " + perlin);
+                    if(perlin < .4f) UpdateTileAt(x, z, 1);
+                    else if(perlin >= .4f) UpdateTileAt(x, z, 0);
                 }
             }
         }

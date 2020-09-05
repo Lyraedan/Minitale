@@ -18,9 +18,9 @@ namespace Minitale.WorldGen
             DestroyImmediate(GetComponent<MeshFilter>());
             DestroyImmediate(GetComponent<Renderer>());
 
-            for(int x = 0; x < 10; x++)
+            for(int x = 0; x < 3; x++)
             {
-                for(int z = 0; z < 10; z++)
+                for(int z = 0; z < 3; z++)
                 {
                     GenerateChunkAt(new Vector3(x * (PLANE_SCALE * Chunk.chunkWidth), 0f, z * (PLANE_SCALE * Chunk.chunkHeight)));
                 }
@@ -35,9 +35,9 @@ namespace Minitale.WorldGen
 
         public void SmoothChunks()
         {
-            for (int x = 0; x < 10; x++)
+            for (int x = 0; x < 3; x++)
             {
-                for (int z = 0; z < 10; z++)
+                for (int z = 0; z < 3; z++)
                 {
                     Vector3 location = new Vector3(x * (PLANE_SCALE * Chunk.chunkWidth), 0f, z * (PLANE_SCALE * Chunk.chunkHeight));
                     string key = $"Chunk_{location.ToString()}";

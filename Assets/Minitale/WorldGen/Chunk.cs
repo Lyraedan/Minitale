@@ -18,6 +18,7 @@ namespace Minitale.WorldGen
 
         [Header("Foilage")]
         public GameObject tree;
+        public GameObject grass;
 
         private Dictionary<string, TileData> tileCache = new Dictionary<string, TileData>();
 
@@ -56,7 +57,7 @@ namespace Minitale.WorldGen
             }
             ApplyBiome();
             Smooth(seed);
-            PlantTrees();
+            PlantFoilage();
 
             BakeNav();
             RenderChunk(false);
@@ -83,20 +84,32 @@ namespace Minitale.WorldGen
 
         }
 
-        public void PlantTrees()
+        public void PlantFoilage()
         {
             for(int x = 0; x < chunkWidth; x++)
             {
                 for(int z = 0; z < chunkHeight; z++)
                 {
-                    bool doPlant = UnityEngine.Random.value > 0.85f;
-                    if(doPlant)
+                    bool plantTrees = Random.value > 0.85f;
+                    if(plantTrees)
                     {
                         TileData tile = GetTileAt(x, z);
                         if (tile.tile == 0) // Grass
                         {
-                            GameObject tree = Instantiate(this.tree, tile.worldObject.transform.position, Quaternion.identity);
+                            GameObject tree = Instantiate(this.tree, tile.worldObject.transform.position, Quaternion.identity/*Quaternion.Euler(new Vector3(0, Random.Range(0, 360), 0))*/);
                             tree.name = "Foilage_Tree";
+                            tree.transform.SetParent(tile.worldObject.transform);
+                        }
+                    }
+
+                    bool plantGrass = Random.value > 0.5 && Random.value <= 0.85;
+                    if (plantGrass)
+                    {
+                        TileData tile = GetTileAt(x, z);
+                        if (tile.tile == 0) // Grass
+                        {
+                            GameObject tree = Instantiate(this.grass, tile.worldObject.transform.position, Quaternion.identity);
+                            tree.name = "Foilage_Grass";
                             tree.transform.SetParent(tile.worldObject.transform);
                         }
                     }

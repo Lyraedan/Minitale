@@ -13,6 +13,8 @@ namespace Minitale.Networking
         public override void OnServerAddPlayer(NetworkConnection conn)
         {
             //base.OnServerAddPlayer(conn);
+            GameObject player = Instantiate(playerPrefab, initialSpawn.position, initialSpawn.rotation);
+            NetworkServer.AddPlayerForConnection(conn, player);
             Debug.Log($"User joiend the server {conn.connectionId}");
         }
 

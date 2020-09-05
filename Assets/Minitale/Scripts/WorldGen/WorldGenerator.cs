@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace Minitale.WorldGen
 {
@@ -28,9 +29,11 @@ namespace Minitale.WorldGen
             DestroyImmediate(GetComponent<MeshFilter>());
             DestroyImmediate(GetComponent<Renderer>());
 
-            UnityEngine.Random.InitState(UnityEngine.Random.Range(int.MinValue, int.MaxValue));
+            //UnityEngine.Random.InitState(UnityEngine.Random.Range(int.MinValue, int.MaxValue));
             //SimplexNoise.SimplexNoise.Seed = seed;
-            if (seed == 0) seed = (int) UnityEngine.Random.value; //SimplexNoise.SimplexNoise.Seed;
+            //if (seed == 0) seed = (int) UnityEngine.Random.value; //SimplexNoise.SimplexNoise.Seed;
+            Random.InitState((int)DateTime.UtcNow.Ticks);
+            if (seed == 0) seed = Random.Range(-100000, 100000);
         }
 
         public void GenerateChunkAt(Vector3 location)

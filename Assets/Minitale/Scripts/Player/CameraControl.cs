@@ -1,21 +1,30 @@
-﻿using Minitale.WorldGen;
+﻿using Boo.Lang.Environments;
+using Minitale.WorldGen;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Minitale.Player {
+namespace Minitale.Player
+{
     public class CameraControl : MonoBehaviour
     {
+        private Vector3 position;
 
         // Start is called before the first frame update
         public void Init()
         {
-            //GenerateChunksAroundMe();
+            position = transform.position;
+
+            GenerateChunksAroundMe();
+            MakeChunksAroundMeVisible();
         }
 
         // Update is called once per frame
         public void HandleWorld()
         {
+            if (Vector3.Distance(position, transform.position) < 1f) return;
+            position = transform.position;
+
             GenerateChunksAroundMe();
             MakeChunksAroundMeVisible();
         }
@@ -46,6 +55,22 @@ namespace Minitale.Player {
             float x = ChunkX();
             float z = ChunkZ();
 
+            var maxSize = 3;
+            var renderSize = 1;
+            for (float mz = z - maxSize; mz <= z + maxSize; ++mz)
+            {
+                for (float mx = x - maxSize; mx <= x + maxSize; ++mx)
+                {
+                    if ((Mathf.Abs(mx) <= renderSize) && (Mathf.Abs(mz) <= renderSize))
+                    {
+                        WorldGenerator.generator.GenerateChunkAt(mx, 0, mz);
+                        continue;
+                    }
+                    WorldGenerator.GetChunkAt(mx, 0f, mz).RenderChunk(false);
+                }
+            }
+
+            /*
             //Top row
             WorldGenerator.generator.GenerateChunkAt(x - 1, 0f, z - 1);
             WorldGenerator.generator.GenerateChunkAt(x, 0f, z - 1);
@@ -87,8 +112,7 @@ namespace Minitale.Player {
             WorldGenerator.GetChunkAt(x + 2, 0f, z + 2).RenderChunk(false);
             WorldGenerator.GetChunkAt(x - 2, 0f, z - 2).RenderChunk(false);
             WorldGenerator.GetChunkAt(x + 2, 0f, z - 2).RenderChunk(false);
-
-
+            */
         }
 
         float ChunkX()

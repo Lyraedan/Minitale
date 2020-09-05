@@ -82,31 +82,11 @@ namespace Minitale.WorldGen
                     float perlin = SimplexNoise.SimplexNoise.Generate(perlinX + seed, perlinZ + seed);
                     //Debug.Log("Noise: " + perlin);
 
-                    if (perlin <= -.25f)
-                    {
-                        UpdateTileAt(x, z, 4);
-                        UpdateWorldPrefabs(x, z, 4);
-                    }
-                    else if (perlin > -.25f && perlin <= 0f)
-                    {
-                        UpdateTileAt(x, z, 1); // Water
-                        UpdateWorldPrefabs(x, z, 1);
-                    }
-                    else if (perlin > 0 && perlin <= .25f)
-                    {
-                        UpdateTileAt(x, z, 2); // Sand
-                        UpdateWorldPrefabs(x, z, 2);
-                    }
-                    else if (perlin > .25f && perlin <= .6f)
-                    {
-                        UpdateTileAt(x, z, 0); // Grass
-                        UpdateWorldPrefabs(x, z, 0);
-                    }
-                    else if (perlin > .6f)
-                    {
-                        UpdateTileAt(x, z, 3); // Stone
-                        UpdateWorldPrefabs(x, z, 3);
-                    }
+                    if (perlin <= -.25f) UpdateWorldPrefabs(x, z, 4); //Deep water
+                    else if (perlin > -.25f && perlin <= 0f) UpdateWorldPrefabs(x, z, 1); //Water
+                    else if (perlin > 0 && perlin <= .25f) UpdateWorldPrefabs(x, z, 2); // Sand
+                    else if (perlin > .25f && perlin <= .6f) UpdateWorldPrefabs(x, z, 0); // Grass
+                    else if (perlin > .6f) UpdateWorldPrefabs(x, z, 3); // Stone
                 }
             }
         }

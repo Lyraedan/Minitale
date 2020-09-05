@@ -168,13 +168,16 @@ namespace Minitale.WorldGen
                     if(placeSpawn)
                     {
                         TileData tile = GetTileAt(x, z);
-                        if(tile.worldObject.transform.childCount < 1)
+                        if (tile.tile == 0) // Grass
                         {
-                            // This tile is clear add a spawn
-                            GameObject spawn = Instantiate(playerSpawn, tile.worldObject.transform);
-                            spawn.name = "Player_Spawn";
-                            spawn.transform.SetParent(tile.worldObject.transform);
-                            spawns.Add(tile.worldObject.transform);
+                            if (tile.worldObject.transform.childCount < 1)
+                            {
+                                // This tile is clear add a spawn
+                                GameObject spawn = Instantiate(playerSpawn, tile.worldObject.transform);
+                                spawn.name = "Player_Spawn";
+                                spawn.transform.SetParent(tile.worldObject.transform);
+                                spawns.Add(tile.worldObject.transform);
+                            }
                         }
                     }
                 }

@@ -89,12 +89,10 @@ namespace Minitale.WorldGen
                         UpdateTileAt(x, z, 0);
                     }
                     */
-                    //Perlin
-                    float perlinX = 1f / (transform.position.x + (x * WorldGenerator.PLANE_SCALE)) / chunkWidth;
-                    float perlinZ = 1f / (transform.position.z + (z * WorldGenerator.PLANE_SCALE)) / chunkHeight;
-                    Vector3 normalized = new Vector3(perlinX, 0f, perlinZ);
-                    normalized.Normalize();
-                    float perlin = Mathf.PerlinNoise(normalized.x, normalized.z);
+                    //Perlin // TODO SEED
+                    float perlinX = (float) (transform.position.x + (x * WorldGenerator.PLANE_SCALE)) * 0.1f / chunkWidth;
+                    float perlinZ = (float) (transform.position.z + (z * WorldGenerator.PLANE_SCALE)) * 0.1f / chunkHeight;
+                    float perlin = Mathf.PerlinNoise(perlinX, perlinZ);
                     Debug.Log("Perlin: " + perlin);
                     if(perlin < .4f) UpdateTileAt(x, z, 1);
                     else if(perlin >= .4f) UpdateTileAt(x, z, 0);

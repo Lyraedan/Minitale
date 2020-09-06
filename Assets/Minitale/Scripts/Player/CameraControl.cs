@@ -1,9 +1,10 @@
 ﻿using Minitale.WorldGen;
+using Mirror;
 using UnityEngine;
 
 namespace Minitale.Player
 {
-    public class CameraControl : MonoBehaviour
+    public class CameraControl : NetworkBehaviour
     {
         private Vector3 position;
 

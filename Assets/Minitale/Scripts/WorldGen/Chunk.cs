@@ -4,6 +4,7 @@ using NaughtyAttributes;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 namespace Minitale.WorldGen
 {
@@ -23,6 +24,8 @@ namespace Minitale.WorldGen
         [Header("Networking")]
         public GameObject playerSpawn;
 
+        private Dictionary<string, NavMeshSurface> navMesh = new Dictionary<string, NavMeshSurface>();
+
         private Dictionary<string, TileData> tileCache = new Dictionary<string, TileData>();
 
         /// <summary>
@@ -30,6 +33,7 @@ namespace Minitale.WorldGen
         /// </summary>
         public void GenerateChunk(int seed)
         {
+            Debug.Log($"Generating chunk with seed {seed}");
             for (int x = 0; x < chunkWidth; x++)
             {
                 for(int z = 0; z < chunkHeight; z++)
@@ -55,14 +59,15 @@ namespace Minitale.WorldGen
                     Renderer tileRenderer = tile.GetComponent<Renderer>();
                     tileRenderer.material.mainTexture = t.texture;
 
+                    navMesh.Add(key, tile.GetComponent<NavMeshSurface>());
                     tileCache.Add(key, new TileData().SetTile(chosen).SetRenderer(tileRenderer).SetPrefab(t.prefab).SetPosition(spawn).SetWorldObject(tile).SetKey(key));
                 }
             }
             ApplyBiome();
             Smooth(seed);
             PlantFoilage();
-            BakeNav();
             RenderChunk(false);
+            BuildNavMesh();
         }
 
         public void RenderChunk(bool state)
@@ -82,7 +87,7 @@ namespace Minitale.WorldGen
         /// </summary>
         public void ApplyBiome()
         {
-
+            Debug.Log("Applying Biomes");
         }
 
         /// <summary>
@@ -90,6 +95,7 @@ namespace Minitale.WorldGen
         /// </summary>
         public void PlantFoilage()
         {
+            Debug.Log("Planting Foilage");
             for(int x = 0; x < chunkWidth; x++)
             {
                 for(int z = 0; z < chunkHeight; z++)
@@ -127,6 +133,7 @@ namespace Minitale.WorldGen
         /// <param name="seed"></param>
         public void Smooth(int seed)
         {
+            Debug.Log("Smoothing terrain");
             for (int x = 0; x < chunkWidth; x++)
             {
                 for (int z = 0; z < chunkHeight; z++)
@@ -148,9 +155,14 @@ namespace Minitale.WorldGen
         /// <summary>
         /// Bake the navmesh
         /// </summary>
-        public void BakeNav()
+        public void BuildNavMesh()
         {
-
+            Debug.Log("Building Navmesh");
+            /*foreach(NavMeshSurface surface in navMesh.Values)
+            {
+                surface.BuildNavMesh();
+            }
+            */
         }
 
         /// <summary>
@@ -158,6 +170,7 @@ namespace Minitale.WorldGen
         /// </summary>
         public void PlaceSpawns()
         {
+            Debug.Log("Placeing spawn points");
             List<Transform> spawns = new List<Transform>();
             for(int x = 0; x < chunkWidth; x++)
             {
@@ -213,6 +226,7 @@ namespace Minitale.WorldGen
             TileData tileAt = GetTileAt(x, z);
             Tile t = tiles.tiles[next];
             GameObject spawn = t.prefab;
+            navMesh.Remove(tileAt.key);
             Destroy(tileAt.worldObject);
             Vector3 placeAt = new Vector3(tileAt.position.x, tileAt.position.y + yOffset, tileAt.position.z);
             GameObject tile = Instantiate(spawn, placeAt, Quaternion.identity);
@@ -230,6 +244,7 @@ namespace Minitale.WorldGen
             tileAt.worldObject = tile;
             tileAt.renderer = tile.GetComponent<Renderer>();
             tileAt.renderer.material.mainTexture = t.texture;
+            navMesh.Add(tileAt.key, tile.GetComponent<NavMeshSurface>());
         }
 
         public void UpdateTileAt(float x, float z, int next)

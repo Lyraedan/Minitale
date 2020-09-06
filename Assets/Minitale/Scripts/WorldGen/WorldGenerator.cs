@@ -34,6 +34,15 @@ namespace Minitale.WorldGen
             //if (seed == 0) seed = (int) UnityEngine.Random.value; //SimplexNoise.SimplexNoise.Seed;
             Random.InitState((int)DateTime.UtcNow.Ticks);
             if (seed == 0) seed = Random.Range(-100000, 100000);
+
+            for(int x = -1; x <= 1; x++)
+            {
+                for(int z = -1; z <= 1; z++)
+                {
+                    GenerateChunkAt(x, 0f, z);
+                    GetChunkAt(x, 0f, z).RenderChunk(true);
+                }
+            }
         }
 
         public void GenerateChunkAt(Vector3 location)

@@ -54,20 +54,34 @@ namespace Minitale.WorldGen
                         animator.randomiseStartingIndex = t.randomIndex;
                         animator.Init();
                     }
-                    NavMeshSurface navmesh = tile.GetComponent<NavMeshSurface>();
-                    navmesh.defaultArea = t.areaType;
+                    NavMeshSurface navmesh = Utils.Utils.AddComponent(tile, t.navSurface.GetComponent<NavMeshSurface>());
                     //Setup tile from tilelist
                     Renderer tileRenderer = tile.GetComponent<Renderer>();
                     tileRenderer.material.mainTexture = t.texture;
 
                     navMesh.Add(key, navmesh);
-                    tileCache.Add(key, new TileData().SetTile(chosen).SetRenderer(tileRenderer).SetPrefab(t.prefab).SetPosition(spawn).SetWorldObject(tile).SetKey(key));
+                    tileCache.Add(key, new TileData().SetTile(chosen).SetRenderer(tileRenderer).SetPrefab(t.prefab).SetPosition(spawn).SetWorldObject(tile).SetKey(key).SetNavSurface(navmesh));
                 }
             }
             ApplyBiome();
             Smooth(seed);
             PlantFoilage();
+            //Can not do this...
+            //UpdateNavmesh();
             RenderChunk(false);
+        }
+
+        void UpdateNavmesh()
+        {
+            Debug.Log("Updating NavMesh");
+            for(int x = 0; x < chunkWidth; x++)
+            {
+                for(int y = 0; y < chunkHeight; y++)
+                {
+                    TileData tile = GetTileAt(x, y);
+                    tile.UpdateNavMesh();
+                }
+            }
         }
 
         public void RenderChunk(bool state)
@@ -143,8 +157,9 @@ namespace Minitale.WorldGen
                     float perlin = SimplexNoise.SimplexNoise.Generate(perlinX + seed, perlinZ + seed);
                     //Debug.Log("Noise: " + perlin);
 
-                    if (perlin <= -.25f) UpdateWorldPrefabs(x, z, 4); //Deep water
-                    else if (perlin > -.25f && perlin <= 0f) UpdateWorldPrefabs(x, z, 1); //Water
+                    //             .25f
+                    if (perlin <= -.5f) UpdateWorldPrefabs(x, z, 4); //Deep water
+                    else if (perlin > -.5f && perlin <= 0f) UpdateWorldPrefabs(x, z, 1); //Water
                     else if (perlin > 0 && perlin <= .25f) UpdateWorldPrefabs(x, z, 2); // Sand
                     else if (perlin > .25f && perlin <= .6f) UpdateWorldPrefabs(x, z, 0); // Grass
                     else if (perlin > .6f) UpdateWorldPrefabs(x, z, 3, 5f); // Stone
@@ -227,12 +242,12 @@ namespace Minitale.WorldGen
                 animator.randomiseStartingIndex = t.randomIndex;
                 animator.Init();
             }
-            NavMeshSurface navmesh = tile.GetComponent<NavMeshSurface>();
-            navmesh.defaultArea = t.areaType;
+            NavMeshSurface navmesh = Utils.Utils.AddComponent(tile, t.navSurface.GetComponent<NavMeshSurface>());
             tileAt.tile = next;
             tileAt.worldObject = tile;
             tileAt.renderer = tile.GetComponent<Renderer>();
             tileAt.renderer.material.mainTexture = t.texture;
+            tileAt.navmesh = navmesh;
             navMesh.Add(tileAt.key, navmesh);
         }
 
@@ -258,6 +273,7 @@ namespace Minitale.WorldGen
         public int tile;
         public Renderer renderer;
         public string key;
+        public NavMeshSurface navmesh;
 
         public TileData SetTile(int tile)
         {
@@ -293,6 +309,17 @@ namespace Minitale.WorldGen
         {
             this.key = key;
             return this;
+        }
+
+        public TileData SetNavSurface(NavMeshSurface surface)
+        {
+            this.navmesh = surface;
+            return this;
+        }
+
+        public void UpdateNavMesh()
+        {
+            navmesh.UpdateNavMesh(worldObject.GetComponent<NavMeshSurface>().navMeshData);
         }
     }
 }

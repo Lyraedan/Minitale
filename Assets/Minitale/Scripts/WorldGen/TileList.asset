@@ -18,7 +18,8 @@ MonoBehaviour:
     prefab: {fileID: 1913017760129779345, guid: b983fa233e9e25244991f8a5b5607dfa,
       type: 3}
     texture: {fileID: 2800000, guid: aecd67085d53ad64a96a3565de6abaa7, type: 3}
-    areaType: 0
+    navSurface: {fileID: 7432785785482041437, guid: 06dbbac88cf62734a921f471061a6ae3,
+      type: 3}
     animated: 0
     randomIndex: 0
     animationSkip: 5
@@ -28,7 +29,8 @@ MonoBehaviour:
     prefab: {fileID: 1913017760129779345, guid: b983fa233e9e25244991f8a5b5607dfa,
       type: 3}
     texture: {fileID: 2800000, guid: 416c56ace9262db4f92a2bc0aafeab9e, type: 3}
-    areaType: 4
+    navSurface: {fileID: 7517381747486027180, guid: b07213d992c3cfb4fb2c99eaa8f7699c,
+      type: 3}
     animated: 1
     randomIndex: 1
     animationSkip: 1
@@ -41,7 +43,8 @@ MonoBehaviour:
     prefab: {fileID: 1913017760129779345, guid: b983fa233e9e25244991f8a5b5607dfa,
       type: 3}
     texture: {fileID: 2800000, guid: 9e7793bf3b50f3540b79c9600d2482c0, type: 3}
-    areaType: 0
+    navSurface: {fileID: 7432785785482041437, guid: 06dbbac88cf62734a921f471061a6ae3,
+      type: 3}
     animated: 0
     randomIndex: 0
     animationSkip: 5
@@ -51,7 +54,8 @@ MonoBehaviour:
     prefab: {fileID: 2634701815109956208, guid: d3e8cadc979edad448d4520203410a94,
       type: 3}
     texture: {fileID: 2800000, guid: b61ba94267673bf47bc717468bbcc0a3, type: 3}
-    areaType: 0
+    navSurface: {fileID: 1783385079593498957, guid: 7a370ab7d13feaa4a83ffba1eb2dc30b,
+      type: 3}
     animated: 0
     randomIndex: 0
     animationSkip: 5
@@ -61,7 +65,8 @@ MonoBehaviour:
     prefab: {fileID: 1913017760129779345, guid: b983fa233e9e25244991f8a5b5607dfa,
       type: 3}
     texture: {fileID: 2800000, guid: fb341160bb1c35841a391e2998c4ddfa, type: 3}
-    areaType: 5
+    navSurface: {fileID: 5435809724648979897, guid: d1550983a93558c41a07c1671411d050,
+      type: 3}
     animated: 1
     randomIndex: 1
     animationSkip: 1

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 namespace Minitale.WorldGen
 {
@@ -21,7 +22,7 @@ namespace Minitale.WorldGen
         public GameObject prefab;
         public Texture2D texture;
         [Header("Navmesh")]
-        public int areaType = 0;
+        public GameObject navSurface;
         [Header("Animation")]
         public bool animated;
         public bool randomIndex;

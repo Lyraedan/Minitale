@@ -6,6 +6,9 @@ TagManager:
   tags:
   - Tile
   - Chunk
+  - SpawnPoint
+  - OtherPlayer
+  - MenuCamera
   layers:
   - Default
   - TransparentFX

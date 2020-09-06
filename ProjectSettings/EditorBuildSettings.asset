@@ -6,9 +6,6 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Minitale/Scenes/Title.unity
-    guid: 456161ad23ac2bd428b88e34720d5452
-  - enabled: 1
-    path: Assets/Minitale/Scenes/World.unity
-    guid: 92b6bc3939d487946b2459f5b5aa2095
+    path: Assets/Minitale/Scenes/Game.unity
+    guid: eb37393aeb6d5784c87768457eb5b9b3
   m_configObjects: {}

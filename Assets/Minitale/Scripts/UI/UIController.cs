@@ -8,8 +8,12 @@ namespace Minitale.UI
     public class UIController : MonoBehaviour
     {
 
+        public Camera menuCamera;
+
         public SceneField world;
+
         public GameObject titleMenu;
+        public GameObject joinMenu;
 
         // Start is called before the first frame update
         void Start()
@@ -25,11 +29,30 @@ namespace Minitale.UI
 
         public void ToggleTitleMenu(bool state)
         {
+            if(state) menuCamera.gameObject.SetActive(true);
             titleMenu.SetActive(state);
         }
 
-        public void LoadSingleplayer()
+        public void ToggleJoinMenu(bool state)
         {
+            joinMenu.SetActive(state);
+        }
+
+        public void JoinGame()
+        {
+
+        }
+
+        public void Host()
+        {
+            ToggleJoinMenu(false);
+            ToggleTitleMenu(false);
+            LoadWorld();
+        }
+
+        public void LoadWorld()
+        {
+            menuCamera.gameObject.SetActive(false);
             SceneManager.LoadScene(world.SceneName);
         }
     }

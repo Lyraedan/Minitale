@@ -4,6 +4,7 @@ using NaughtyAttributes;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 namespace Minitale.WorldGen
 {
@@ -19,6 +20,11 @@ namespace Minitale.WorldGen
         [Header("Foilage")]
         public GameObject tree;
         public GameObject grass;
+
+        [Header("Networking")]
+        public GameObject playerSpawn;
+
+        private Dictionary<string, NavMeshSurface> navMesh = new Dictionary<string, NavMeshSurface>();
 
         private Dictionary<string, TileData> tileCache = new Dictionary<string, TileData>();
 
@@ -47,20 +53,37 @@ namespace Minitale.WorldGen
                         animator.randomiseStartingIndex = t.randomIndex;
                         animator.Init();
                     }
-
+                    NavMeshSurface navmesh = null;
+                    if (t.navmeshEnabled)
+                    {
+                        navmesh = Utils.Utils.AddComponent(tile, t.navSurface.GetComponent<NavMeshSurface>());
+                        navMesh.Add(key, navmesh);
+                    }
                     //Setup tile from tilelist
                     Renderer tileRenderer = tile.GetComponent<Renderer>();
                     tileRenderer.material.mainTexture = t.texture;
 
-                    tileCache.Add(key, new TileData().SetTile(chosen).SetRenderer(tileRenderer).SetPrefab(t.prefab).SetPosition(spawn).SetWorldObject(tile).SetKey(key));
+                    tileCache.Add(key, new TileData().SetTile(chosen).SetRenderer(tileRenderer).SetPrefab(t.prefab).SetPosition(spawn).SetWorldObject(tile).SetKey(key).SetNavSurface(navmesh));
                 }
             }
             ApplyBiome();
             Smooth(seed);
             PlantFoilage();
-
-            BakeNav();
+            //Can not do this...
+            //UpdateNavmesh();
             RenderChunk(false);
+        }
+
+        void UpdateNavmesh()
+        {
+            for(int x = 0; x < chunkWidth; x++)
+            {
+                for(int y = 0; y < chunkHeight; y++)
+                {
+                    TileData tile = GetTileAt(x, y);
+                    tile.UpdateNavMesh();
+                }
+            }
         }
 
         public void RenderChunk(bool state)
@@ -70,7 +93,6 @@ namespace Minitale.WorldGen
                 for (int z = 0; z < chunkHeight; z++)
                 {
                     //GetTileAt(x, z).renderer.enabled = state;
-                    // I don't know about this solution
                     GetTileAt(x, z).worldObject.SetActive(state);
                 }
             }
@@ -84,6 +106,9 @@ namespace Minitale.WorldGen
 
         }
 
+        /// <summary>
+        /// Populate the terrian with trees, grass, flowers
+        /// </summary>
         public void PlantFoilage()
         {
             for(int x = 0; x < chunkWidth; x++)
@@ -132,30 +157,80 @@ namespace Minitale.WorldGen
                     float perlin = SimplexNoise.SimplexNoise.Generate(perlinX + seed, perlinZ + seed);
                     //Debug.Log("Noise: " + perlin);
 
-                    if (perlin <= -.25f) UpdateWorldPrefabs(x, z, 4); //Deep water
-                    else if (perlin > -.25f && perlin <= 0f) UpdateWorldPrefabs(x, z, 1); //Water
+                    //             .25f
+                    if (perlin <= -.5f) UpdateWorldPrefabs(x, z, 4); //Deep water
+                    else if (perlin > -.5f && perlin <= 0f) UpdateWorldPrefabs(x, z, 1); //Water
                     else if (perlin > 0 && perlin <= .25f) UpdateWorldPrefabs(x, z, 2); // Sand
                     else if (perlin > .25f && perlin <= .6f) UpdateWorldPrefabs(x, z, 0); // Grass
-                    else if (perlin > .6f) UpdateWorldPrefabs(x, z, 3); // Stone
+                    else if (perlin > .6f) UpdateWorldPrefabs(x, z, 3, 5f); // Stone
                 }
             }
         }
 
         /// <summary>
-        /// Bake the navmesh
+        /// Networking - Place Mirror spawn points for players
         /// </summary>
-        public void BakeNav()
+        public void PlaceSpawns()
         {
+            List<Transform> spawns = new List<Transform>();
+            for(int x = 0; x < chunkWidth; x++)
+            {
+                for(int z = 0; z < chunkHeight; z++)
+                {
+                    bool placeSpawn = Random.value > 0.7f;
+                    if(placeSpawn)
+                    {
+                        TileData tile = GetTileAt(x, z);
+                        if (tile.tile == 0) // Grass
+                        {
+                            if (tile.worldObject.transform.childCount < 1)
+                            {
+                                // This tile is clear add a spawn
+                                Vector3 point = new Vector3(tile.worldObject.transform.position.x, tile.worldObject.transform.position.y + 5, tile.worldObject.transform.position.z);
+                                GameObject spawn = Instantiate(playerSpawn, point, Quaternion.identity);
+                                spawn.name = "Player_Spawn";
+                                spawn.transform.SetParent(tile.worldObject.transform);
+                                spawns.Add(tile.worldObject.transform);
+                            }
+                        }
+                    }
+                }
+            }
 
+            // No spawns were made?!
+            if(spawns.Count < 1)
+            {
+                for (int x = 0; x < chunkWidth; x++)
+                {
+                    for (int z = 0; z < chunkHeight; z++)
+                    {
+                        TileData tile = GetTileAt(x, z);
+                        if(tile.tile == 0) // grass
+                        {
+                            if (tile.worldObject.transform.childCount < 1)
+                            {
+                                Vector3 point = new Vector3(tile.worldObject.transform.position.x, tile.worldObject.transform.position.y + 5, tile.worldObject.transform.position.z);
+                                GameObject spawn = Instantiate(playerSpawn, point, Quaternion.identity);
+                                spawn.name = "Player_Spawn";
+                                spawn.transform.SetParent(tile.worldObject.transform);
+                                spawns.Add(tile.worldObject.transform);
+                            }
+                        }
+                    }
+                }
+            }
         }
 
-        public void UpdateWorldPrefabs(float x, float z, int next)
+
+        public void UpdateWorldPrefabs(float x, float z, int next, float yOffset = 0f)
         {
             TileData tileAt = GetTileAt(x, z);
             Tile t = tiles.tiles[next];
             GameObject spawn = t.prefab;
+            navMesh.Remove(tileAt.key);
             Destroy(tileAt.worldObject);
-            GameObject tile = Instantiate(spawn, tileAt.position, Quaternion.identity);
+            Vector3 placeAt = new Vector3(tileAt.position.x, tileAt.position.y + yOffset, tileAt.position.z);
+            GameObject tile = Instantiate(spawn, placeAt, Quaternion.identity);
             tile.name = tileAt.key;
             tile.transform.SetParent(transform);
             if (t.animated)
@@ -165,6 +240,12 @@ namespace Minitale.WorldGen
                 animator.delay = t.animationSkip;
                 animator.randomiseStartingIndex = t.randomIndex;
                 animator.Init();
+            }
+            if (t.navmeshEnabled)
+            {
+                NavMeshSurface navmesh = Utils.Utils.AddComponent(tile, t.navSurface.GetComponent<NavMeshSurface>());
+                tileAt.navmesh = navmesh;
+                navMesh.Add(tileAt.key, navmesh);
             }
             tileAt.tile = next;
             tileAt.worldObject = tile;
@@ -194,6 +275,7 @@ namespace Minitale.WorldGen
         public int tile;
         public Renderer renderer;
         public string key;
+        public NavMeshSurface navmesh;
 
         public TileData SetTile(int tile)
         {
@@ -229,6 +311,17 @@ namespace Minitale.WorldGen
         {
             this.key = key;
             return this;
+        }
+
+        public TileData SetNavSurface(NavMeshSurface surface)
+        {
+            this.navmesh = surface;
+            return this;
+        }
+
+        public void UpdateNavMesh()
+        {
+            navmesh.UpdateNavMesh(worldObject.GetComponent<NavMeshSurface>().navMeshData);
         }
     }
 }

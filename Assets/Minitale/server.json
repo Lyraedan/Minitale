@@ -1,7 +1,10 @@
 [
     {
         "ip": "localhost",
-        "port": 80,
-        "max_players": 5
+        "port": 7777,
+        "max_players": 20,
+        "server_tick_rate": 30,
+        "timeout_enabled": false,
+        "timeout_after_sec": 60
     }
 ]

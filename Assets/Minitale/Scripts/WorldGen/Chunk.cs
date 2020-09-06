@@ -1,5 +1,6 @@
 ﻿using Minitale.Utils;
 using Minitale.WorldGen;
+using Mirror;
 using NaughtyAttributes;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using UnityEngine.AI;
 
 namespace Minitale.WorldGen
 {
-    public class Chunk : MonoBehaviour
+    public class Chunk : NetworkBehaviour
     {
 
         //Swapping out biome enum for biome grid
@@ -25,7 +26,6 @@ namespace Minitale.WorldGen
         public GameObject playerSpawn;
 
         private Dictionary<string, NavMeshSurface> navMesh = new Dictionary<string, NavMeshSurface>();
-
         private Dictionary<string, TileData> tileCache = new Dictionary<string, TileData>();
 
         /// <summary>
@@ -63,25 +63,36 @@ namespace Minitale.WorldGen
                     Renderer tileRenderer = tile.GetComponent<Renderer>();
                     tileRenderer.material.mainTexture = t.texture;
 
-                    tileCache.Add(key, new TileData().SetTile(chosen).SetRenderer(tileRenderer).SetPrefab(t.prefab).SetPosition(spawn).SetWorldObject(tile).SetKey(key).SetNavSurface(navmesh));
+                    TileData data = new TileData();
+                    data.tile = chosen;
+                    data.renderer = tileRenderer;
+                    data.prefab = t.prefab;
+                    data.position = spawn;
+                    data.worldObject = tile;
+                    data.key = key;
+                    data.navmesh = navmesh;
+
+                    tileCache.Add(key, data);
                 }
             }
             ApplyBiome();
             Smooth(seed);
-            PlantFoilage();
-            //Can not do this...
-            //UpdateNavmesh();
+            CmdPlantFoliage();
             RenderChunk(false);
         }
 
-        void UpdateNavmesh()
+        public void ClearFoliage()
         {
             for(int x = 0; x < chunkWidth; x++)
             {
-                for(int y = 0; y < chunkHeight; y++)
+                for(int z = 0; z < chunkHeight; z++)
                 {
-                    TileData tile = GetTileAt(x, y);
-                    tile.UpdateNavMesh();
+                    TileData tile = GetTileAt(x, z);
+                    foreach(GameObject foliage in tile.foliage)
+                    {
+                        Destroy(foliage);
+                    }
+                    tile.foliage.Clear();
                 }
             }
         }
@@ -109,7 +120,8 @@ namespace Minitale.WorldGen
         /// <summary>
         /// Populate the terrian with trees, grass, flowers
         /// </summary>
-        public void PlantFoilage()
+        [Command]
+        public void CmdPlantFoliage()
         {
             for(int x = 0; x < chunkWidth; x++)
             {
@@ -121,9 +133,10 @@ namespace Minitale.WorldGen
                         TileData tile = GetTileAt(x, z);
                         if (tile.tile == 0) // Grass
                         {
-                            GameObject tree = Instantiate(this.tree, tile.worldObject.transform.position, Quaternion.identity/*Quaternion.Euler(new Vector3(0, Random.Range(0, 360), 0))*/);
+                            GameObject tree = Instantiate(this.tree, tile.worldObject.transform.position, Quaternion.identity);
                             tree.name = "Foilage_Tree";
                             tree.transform.SetParent(tile.worldObject.transform);
+                            tile.foliage.Add(tree);
                         }
                     }
 
@@ -133,9 +146,10 @@ namespace Minitale.WorldGen
                         TileData tile = GetTileAt(x, z);
                         if (tile.tile == 0) // Grass
                         {
-                            GameObject tree = Instantiate(this.grass, tile.worldObject.transform.position, Quaternion.identity);
-                            tree.name = "Foilage_Grass";
-                            tree.transform.SetParent(tile.worldObject.transform);
+                            GameObject grass = Instantiate(this.grass, tile.worldObject.transform.position,Quaternion.Euler(new Vector3(0, Random.Range(0, 360), 0)));
+                            grass.name = "Foilage_Grass";
+                            grass.transform.SetParent(tile.worldObject.transform);
+                            tile.foliage.Add(grass);
                         }
                     }
                 }
@@ -221,7 +235,13 @@ namespace Minitale.WorldGen
             }
         }
 
-
+        /// <summary>
+        /// Replace a tile with another tile in world space
+        /// </summary>
+        /// <param name="x">Tile X coordinate</param>
+        /// <param name="z">Tile Z coordinate</param>
+        /// <param name="next">The ID of the next tile</param>
+        /// <param name="yOffset">the Y offset</param>
         public void UpdateWorldPrefabs(float x, float z, int next, float yOffset = 0f)
         {
             TileData tileAt = GetTileAt(x, z);
@@ -253,6 +273,12 @@ namespace Minitale.WorldGen
             tileAt.renderer.material.mainTexture = t.texture;
         }
 
+        /// <summary>
+        /// User for updating tiles where prefab updates are not required
+        /// </summary>
+        /// <param name="x">Tile coord X</param>
+        /// <param name="z">Tile coord Z</param>
+        /// <param name="next">The ID of the tile you wish to replace the current one with </param>
         public void UpdateTileAt(float x, float z, int next)
         {
             TileData tileAt = GetTileAt(x, z);
@@ -266,62 +292,22 @@ namespace Minitale.WorldGen
 
     }
 
-    public class TileData
+    public class TileData : NetworkBehaviour
     {
 
         public GameObject worldObject;
         public GameObject prefab;
         public Vector3 position;
         public int tile;
-        public Renderer renderer;
+        public new Renderer renderer;
         public string key;
         public NavMeshSurface navmesh;
 
-        public TileData SetTile(int tile)
-        {
-            this.tile = tile;
-            return this;
-        }
+        public readonly SyncListGameObject foliage = new SyncListGameObject();
 
-        public TileData SetRenderer(Renderer renderer)
+        public string ToJSON()
         {
-            this.renderer = renderer;
-            return this;
-        }
-
-        public TileData SetPrefab(GameObject gameObject)
-        {
-            this.prefab = gameObject;
-            return this;
-        }
-
-        public TileData SetPosition(Vector3 position)
-        {
-            this.position = position;
-            return this;
-        }
-
-        public TileData SetWorldObject(GameObject gameObject)
-        {
-            this.worldObject = gameObject;
-            return this;
-        }
-
-        public TileData SetKey(string key)
-        {
-            this.key = key;
-            return this;
-        }
-
-        public TileData SetNavSurface(NavMeshSurface surface)
-        {
-            this.navmesh = surface;
-            return this;
-        }
-
-        public void UpdateNavMesh()
-        {
-            navmesh.UpdateNavMesh(worldObject.GetComponent<NavMeshSurface>().navMeshData);
+            return JsonUtility.ToJson(this);
         }
     }
 }

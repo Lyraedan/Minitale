@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using Mirror;
+using System;
 using System.Reflection;
 using UnityEngine;
 
@@ -38,4 +37,7 @@ namespace Minitale.Utils
             return go.AddComponent<T>().GetCopyOf(toAdd) as T;
         }
     }
+
+    [Serializable]
+    public class SyncListGameObject : SyncList<GameObject> { }
 }

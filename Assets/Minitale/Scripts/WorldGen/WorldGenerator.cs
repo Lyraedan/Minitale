@@ -25,41 +25,17 @@ namespace Minitale.WorldGen
             generator = this;
         }
 
-        // Start is called before the first frame update
         void Start()
         {
             DestroyImmediate(GetComponent<MeshFilter>());
             DestroyImmediate(GetComponent<Renderer>());
-
         }
 
         public override void OnStartServer()
         {
-
             initTicks = (int)DateTime.UtcNow.Ticks;
             Random.InitState(initTicks);
             if (seed == 0) seed = Random.Range(-100000, 100000);
-
-            for (int x = -1; x <= 1; x++)
-            {
-                for (int z = -1; z <= 1; z++)
-                {
-                    GenerateChunkAt(x, 0f, z);
-                    GetChunkAt(x, 0f, z).RenderChunk(true);
-                }
-            }
-        }
-
-        public override void OnStartClient()
-        {
-            for (int x = -1; x <= 1; x++)
-            {
-                for (int z = -1; z <= 1; z++)
-                {
-                    GenerateChunkAt(x, 0f, z);
-                    GetChunkAt(x, 0f, z).RenderChunk(true);
-                }
-            }
         }
 
         public void SyncTicks(int oldTicks, int newTicks)

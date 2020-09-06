@@ -52,6 +52,7 @@ namespace Minitale.Player
             float x = ChunkX();
             float z = ChunkZ();
 
+            /*
             var maxSize = 3;
             var renderSize = 1;
             for (float mz = z - maxSize; mz <= z + maxSize; ++mz)
@@ -66,8 +67,9 @@ namespace Minitale.Player
                     WorldGenerator.GetChunkAt(mx, 0f, mz).RenderChunk(false);
                 }
             }
+            */
 
-            /*
+            
             //Top row
             WorldGenerator.generator.GenerateChunkAt(x - 1, 0f, z - 1);
             WorldGenerator.generator.GenerateChunkAt(x, 0f, z - 1);
@@ -109,15 +111,15 @@ namespace Minitale.Player
             WorldGenerator.GetChunkAt(x + 2, 0f, z + 2).RenderChunk(false);
             WorldGenerator.GetChunkAt(x - 2, 0f, z - 2).RenderChunk(false);
             WorldGenerator.GetChunkAt(x + 2, 0f, z - 2).RenderChunk(false);
-            */
+            
             }
 
-            float ChunkX()
+        public float ChunkX()
         {
             return Mathf.Round(transform.position.x / (WorldGenerator.PLANE_SCALE * Chunk.chunkWidth));
         }
 
-        float ChunkZ()
+        public float ChunkZ()
         {
             return Mathf.Round(transform.position.z / (WorldGenerator.PLANE_SCALE * Chunk.chunkHeight));
         }

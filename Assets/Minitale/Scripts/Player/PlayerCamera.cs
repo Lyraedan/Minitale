@@ -1,4 +1,5 @@
-﻿using Mirror;
+﻿using Minitale.WorldGen;
+using Mirror;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -21,20 +22,23 @@ namespace Minitale.Player
 
             if (!hasAuthority)
             {
-                GameObject[] spawnPoints = GameObject.FindGameObjectsWithTag("SpawnPoint");
-
-
-                //TODO Make it move the player to a spawn point AFTER the level has generated
-                int chosen = Random.Range(0, spawnPoints.Length);
-
-                Vector3 spawn = spawnPoints[chosen].transform.position;
-                gameObject.transform.position = spawn;
-
                 gameObject.tag = "OtherPlayer";
                 DestroyImmediate(this);
                 return;
             }
             Camera.main.transform.parent.SetParent(transform);
+            for (int x = -1; x <= 1; x++)
+            {
+                for (int z = -1; z <= 1; z++)
+                {
+                    WorldGenerator.generator.GenerateChunkAt(x, 0f, z);
+                    WorldGenerator.GetChunkAt(x, 0f, z).RenderChunk(true);
+                }
+            }
+            GameObject[] spawnPoints = GameObject.FindGameObjectsWithTag("SpawnPoint");
+            int chosen = Random.Range(0, spawnPoints.Length);
+            Vector3 spawn = spawnPoints[chosen].transform.position;
+            gameObject.transform.position = spawn;
             Init();
         }
 

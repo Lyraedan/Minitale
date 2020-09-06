@@ -20,6 +20,8 @@ namespace Minitale.WorldGen
         public int id;
         public GameObject prefab;
         public Texture2D texture;
+        [Header("Navmesh")]
+        public int areaType = 0;
         [Header("Animation")]
         public bool animated;
         public bool randomIndex;

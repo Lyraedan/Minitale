@@ -54,12 +54,13 @@ namespace Minitale.WorldGen
                         animator.randomiseStartingIndex = t.randomIndex;
                         animator.Init();
                     }
-
+                    NavMeshSurface navmesh = tile.GetComponent<NavMeshSurface>();
+                    navmesh.defaultArea = t.areaType;
                     //Setup tile from tilelist
                     Renderer tileRenderer = tile.GetComponent<Renderer>();
                     tileRenderer.material.mainTexture = t.texture;
 
-                    navMesh.Add(key, tile.GetComponent<NavMeshSurface>());
+                    navMesh.Add(key, navmesh);
                     tileCache.Add(key, new TileData().SetTile(chosen).SetRenderer(tileRenderer).SetPrefab(t.prefab).SetPosition(spawn).SetWorldObject(tile).SetKey(key));
                 }
             }
@@ -67,7 +68,6 @@ namespace Minitale.WorldGen
             Smooth(seed);
             PlantFoilage();
             RenderChunk(false);
-            BuildNavMesh();
         }
 
         public void RenderChunk(bool state)
@@ -153,19 +153,6 @@ namespace Minitale.WorldGen
         }
 
         /// <summary>
-        /// Bake the navmesh
-        /// </summary>
-        public void BuildNavMesh()
-        {
-            Debug.Log("Building Navmesh");
-            /*foreach(NavMeshSurface surface in navMesh.Values)
-            {
-                surface.BuildNavMesh();
-            }
-            */
-        }
-
-        /// <summary>
         /// Networking - Place Mirror spawn points for players
         /// </summary>
         public void PlaceSpawns()
@@ -240,11 +227,13 @@ namespace Minitale.WorldGen
                 animator.randomiseStartingIndex = t.randomIndex;
                 animator.Init();
             }
+            NavMeshSurface navmesh = tile.GetComponent<NavMeshSurface>();
+            navmesh.defaultArea = t.areaType;
             tileAt.tile = next;
             tileAt.worldObject = tile;
             tileAt.renderer = tile.GetComponent<Renderer>();
             tileAt.renderer.material.mainTexture = t.texture;
-            navMesh.Add(tileAt.key, tile.GetComponent<NavMeshSurface>());
+            navMesh.Add(tileAt.key, navmesh);
         }
 
         public void UpdateTileAt(float x, float z, int next)

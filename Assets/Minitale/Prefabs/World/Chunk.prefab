@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2116815261323648259}
   - component: {fileID: 6067865527090066698}
+  - component: {fileID: 4567856148661544387}
   m_Layer: 0
   m_Name: Chunk
   m_TagString: Chunk
@@ -43,9 +44,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dd436c257479e6f459f2b7e04a3ff82e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
   tiles: {fileID: 11400000, guid: 37fbcffde766fb646a137f6dc0e4a519, type: 2}
   scale: 0.1
   tree: {fileID: 7777908325632160245, guid: 2a10fd666acdfcb49bf08275b65a8ee7, type: 3}
   grass: {fileID: 819334162155748798, guid: fd0dead5586563044bb30b4b305421c7, type: 3}
   playerSpawn: {fileID: 6289902937826581225, guid: ce96583d6e10b164693ee7d58e9359c8,
     type: 3}
+--- !u!114 &4567856148661544387
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2116815261323648256}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sceneId: 0
+  serverOnly: 0
+  m_AssetId: 
+  hasSpawned: 0

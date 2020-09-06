@@ -200,7 +200,7 @@ namespace Minitale.WorldGen
                             if (tile.worldObject.transform.childCount < 1)
                             {
                                 // This tile is clear add a spawn
-                                Vector3 point = new Vector3(tile.worldObject.transform.position.x, tile.worldObject.transform.position.y + 5, tile.worldObject.transform.position.z);
+                                Vector3 point = new Vector3(tile.worldObject.transform.position.x, tile.worldObject.transform.position.y + 2.5f, tile.worldObject.transform.position.z);
                                 GameObject spawn = Instantiate(playerSpawn, point, Quaternion.identity);
                                 spawn.name = "Player_Spawn";
                                 spawn.transform.SetParent(tile.worldObject.transform);

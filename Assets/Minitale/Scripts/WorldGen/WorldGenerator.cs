@@ -1,4 +1,5 @@
 ﻿using Minitale.Utils;
+using Mirror;
 using NaughtyAttributes;
 using System;
 using System.Collections;
@@ -8,13 +9,14 @@ using Random = UnityEngine.Random;
 
 namespace Minitale.WorldGen
 {
-    public class WorldGenerator : MonoBehaviour
+    public class WorldGenerator : NetworkBehaviour
     {
         public static float PLANE_SCALE = 10F;
 
         public GameObject chunk;
         public static Dictionary<string, GameObject> chunks = new Dictionary<string, GameObject>();
-        public int seed = 0, initTicks = 0;
+        [SyncVar(hook = nameof(SyncSeed))] public int seed = 0;
+        [ReadOnly] [SyncVar(hook = nameof(SyncTicks))] public int initTicks = 0;
 
         public static WorldGenerator generator;
 
@@ -29,16 +31,18 @@ namespace Minitale.WorldGen
             DestroyImmediate(GetComponent<MeshFilter>());
             DestroyImmediate(GetComponent<Renderer>());
 
-            //UnityEngine.Random.InitState(UnityEngine.Random.Range(int.MinValue, int.MaxValue));
-            //SimplexNoise.SimplexNoise.Seed = seed;
-            //if (seed == 0) seed = (int) UnityEngine.Random.value; //SimplexNoise.SimplexNoise.Seed;
+        }
+
+        public override void OnStartServer()
+        {
+
             initTicks = (int)DateTime.UtcNow.Ticks;
             Random.InitState(initTicks);
             if (seed == 0) seed = Random.Range(-100000, 100000);
 
-            for(int x = -1; x <= 1; x++)
+            for (int x = -1; x <= 1; x++)
             {
-                for(int z = -1; z <= 1; z++)
+                for (int z = -1; z <= 1; z++)
                 {
                     GenerateChunkAt(x, 0f, z);
                     GetChunkAt(x, 0f, z).RenderChunk(true);
@@ -46,12 +50,27 @@ namespace Minitale.WorldGen
             }
         }
 
-        public void ConfigureWorld(int initTicks, int seed)
+        public override void OnStartClient()
         {
-            Random.InitState(initTicks);
-            this.initTicks = initTicks;
-            this.seed = seed;
+            for (int x = -1; x <= 1; x++)
+            {
+                for (int z = -1; z <= 1; z++)
+                {
+                    GenerateChunkAt(x, 0f, z);
+                    GetChunkAt(x, 0f, z).RenderChunk(true);
+                }
+            }
         }
+
+        public void SyncTicks(int oldTicks, int newTicks)
+        {
+            Random.InitState(newTicks);
+        }
+
+        public void SyncSeed(int oldSeed, int newSeed)
+         {
+            seed = newSeed;
+         }
 
         public void GenerateChunkAt(Vector3 location)
         {
@@ -101,8 +120,8 @@ namespace Minitale.WorldGen
             {
                 GameObject chunk = chunks[key];
                 Destroy(chunk);
-                chunks.Remove(key);
             }
+            chunks.Clear();
         }
     }
 }

@@ -22,12 +22,10 @@ namespace Minitale.Player
             if (!hasAuthority)
             {
                 GameObject[] spawnPoints = GameObject.FindGameObjectsWithTag("SpawnPoint");
-                Debug.Log($"Spawn points found {spawnPoints.Length}");
 
 
                 //TODO Make it move the player to a spawn point AFTER the level has generated
                 int chosen = Random.Range(0, spawnPoints.Length);
-                Debug.Log($"Chose spawn {chosen}");
 
                 Vector3 spawn = spawnPoints[chosen].transform.position;
                 gameObject.transform.position = spawn;

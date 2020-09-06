@@ -33,7 +33,6 @@ namespace Minitale.WorldGen
         /// </summary>
         public void GenerateChunk(int seed)
         {
-            Debug.Log($"Generating chunk with seed {seed}");
             for (int x = 0; x < chunkWidth; x++)
             {
                 for(int z = 0; z < chunkHeight; z++)
@@ -77,7 +76,6 @@ namespace Minitale.WorldGen
 
         void UpdateNavmesh()
         {
-            Debug.Log("Updating NavMesh");
             for(int x = 0; x < chunkWidth; x++)
             {
                 for(int y = 0; y < chunkHeight; y++)
@@ -105,7 +103,7 @@ namespace Minitale.WorldGen
         /// </summary>
         public void ApplyBiome()
         {
-            Debug.Log("Applying Biomes");
+
         }
 
         /// <summary>
@@ -113,7 +111,6 @@ namespace Minitale.WorldGen
         /// </summary>
         public void PlantFoilage()
         {
-            Debug.Log("Planting Foilage");
             for(int x = 0; x < chunkWidth; x++)
             {
                 for(int z = 0; z < chunkHeight; z++)
@@ -151,7 +148,6 @@ namespace Minitale.WorldGen
         /// <param name="seed"></param>
         public void Smooth(int seed)
         {
-            Debug.Log("Smoothing terrain");
             for (int x = 0; x < chunkWidth; x++)
             {
                 for (int z = 0; z < chunkHeight; z++)
@@ -176,7 +172,6 @@ namespace Minitale.WorldGen
         /// </summary>
         public void PlaceSpawns()
         {
-            Debug.Log("Placeing spawn points");
             List<Transform> spawns = new List<Transform>();
             for(int x = 0; x < chunkWidth; x++)
             {

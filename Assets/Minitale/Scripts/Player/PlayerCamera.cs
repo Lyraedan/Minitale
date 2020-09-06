@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Mirror;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -17,12 +18,32 @@ namespace Minitale.Player
         // Start is called before the first frame update
         private void Start()
         {
+
+            if (!hasAuthority)
+            {
+                GameObject[] spawnPoints = GameObject.FindGameObjectsWithTag("SpawnPoint");
+                Debug.Log($"Spawn points found {spawnPoints.Length}");
+
+
+                //TODO Make it move the player to a spawn point AFTER the level has generated
+                int chosen = Random.Range(0, spawnPoints.Length);
+                Debug.Log($"Chose spawn {chosen}");
+
+                Vector3 spawn = spawnPoints[chosen].transform.position;
+                gameObject.transform.position = spawn;
+
+                gameObject.tag = "OtherPlayer";
+                DestroyImmediate(this);
+                return;
+            }
+            Camera.main.transform.parent.SetParent(transform);
             Init();
         }
 
-        // Update is called once per frame
+        [Client]
         void Update()
         {
+            if (!hasAuthority) return;
             HandleWorld();
             Move();
         }

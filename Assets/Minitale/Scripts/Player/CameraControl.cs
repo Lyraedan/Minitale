@@ -12,9 +12,8 @@ namespace Minitale.Player
         public void Init()
         {
             position = transform.position;
-
-            GenerateChunksAroundMe();
-            MakeChunksAroundMeVisible();
+            //GenerateChunksAroundMe();
+            //MakeChunksAroundMeVisible();
         }
 
         // Update is called once per frame
@@ -111,9 +110,9 @@ namespace Minitale.Player
             WorldGenerator.GetChunkAt(x - 2, 0f, z - 2).RenderChunk(false);
             WorldGenerator.GetChunkAt(x + 2, 0f, z - 2).RenderChunk(false);
             */
-        }
+            }
 
-        float ChunkX()
+            float ChunkX()
         {
             return Mathf.Round(transform.position.x / (WorldGenerator.PLANE_SCALE * Chunk.chunkWidth));
         }

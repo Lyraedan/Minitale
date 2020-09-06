@@ -14,7 +14,7 @@ namespace Minitale.WorldGen
 
         public GameObject chunk;
         public static Dictionary<string, GameObject> chunks = new Dictionary<string, GameObject>();
-        public int seed = 0;
+        public int seed = 0, initTicks = 0;
 
         public static WorldGenerator generator;
 
@@ -32,7 +32,8 @@ namespace Minitale.WorldGen
             //UnityEngine.Random.InitState(UnityEngine.Random.Range(int.MinValue, int.MaxValue));
             //SimplexNoise.SimplexNoise.Seed = seed;
             //if (seed == 0) seed = (int) UnityEngine.Random.value; //SimplexNoise.SimplexNoise.Seed;
-            Random.InitState((int)DateTime.UtcNow.Ticks);
+            initTicks = (int)DateTime.UtcNow.Ticks;
+            Random.InitState(initTicks);
             if (seed == 0) seed = Random.Range(-100000, 100000);
 
             for(int x = -1; x <= 1; x++)
@@ -43,6 +44,13 @@ namespace Minitale.WorldGen
                     GetChunkAt(x, 0f, z).RenderChunk(true);
                 }
             }
+        }
+
+        public void ConfigureWorld(int initTicks, int seed)
+        {
+            Random.InitState(initTicks);
+            this.initTicks = initTicks;
+            this.seed = seed;
         }
 
         public void GenerateChunkAt(Vector3 location)
@@ -85,6 +93,16 @@ namespace Minitale.WorldGen
         public static bool ChunkExistsAt(float x, float y, float z)
         {
             return chunks.ContainsKey($"Chunk_{x}_{y}_{z}");
+        }
+
+        public void ClearChunks()
+        {
+            foreach(string key in chunks.Keys)
+            {
+                GameObject chunk = chunks[key];
+                Destroy(chunk);
+                chunks.Remove(key);
+            }
         }
     }
 }

@@ -16,6 +16,7 @@ namespace Minitale.Networking
             //base.OnServerAddPlayer(conn);
             GameObject player = Instantiate(playerPrefab, initialSpawn.position, initialSpawn.rotation);
             NetworkServer.AddPlayerForConnection(conn, player);
+            /*
             if(conn.identity.isLocalPlayer)
             {
                 GameObject[] spawnPoints = GameObject.FindGameObjectsWithTag("SpawnPoint");
@@ -29,6 +30,7 @@ namespace Minitale.Networking
                 Vector3 spawn = spawnPoints[chosen].transform.position;
                 conn.identity.gameObject.transform.position = spawn;
                 */
+                /*
                 conn.identity.gameObject.tag = "Player";
                 Camera.main.transform.parent.SetParent(conn.identity.gameObject.transform);
             } else
@@ -36,6 +38,7 @@ namespace Minitale.Networking
                 conn.identity.gameObject.tag = "OtherPlayer";
                 DestroyImmediate(conn.identity.gameObject.GetComponent<PlayerCamera>());
             }
+            */
 
             Debug.Log($"User joiend the server {conn.connectionId}");
         }

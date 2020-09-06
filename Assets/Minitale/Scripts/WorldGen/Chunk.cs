@@ -54,12 +54,16 @@ namespace Minitale.WorldGen
                         animator.randomiseStartingIndex = t.randomIndex;
                         animator.Init();
                     }
-                    NavMeshSurface navmesh = Utils.Utils.AddComponent(tile, t.navSurface.GetComponent<NavMeshSurface>());
+                    NavMeshSurface navmesh = null;
+                    if (t.navmeshEnabled)
+                    {
+                        navmesh = Utils.Utils.AddComponent(tile, t.navSurface.GetComponent<NavMeshSurface>());
+                        navMesh.Add(key, navmesh);
+                    }
                     //Setup tile from tilelist
                     Renderer tileRenderer = tile.GetComponent<Renderer>();
                     tileRenderer.material.mainTexture = t.texture;
 
-                    navMesh.Add(key, navmesh);
                     tileCache.Add(key, new TileData().SetTile(chosen).SetRenderer(tileRenderer).SetPrefab(t.prefab).SetPosition(spawn).SetWorldObject(tile).SetKey(key).SetNavSurface(navmesh));
                 }
             }
@@ -242,13 +246,16 @@ namespace Minitale.WorldGen
                 animator.randomiseStartingIndex = t.randomIndex;
                 animator.Init();
             }
-            NavMeshSurface navmesh = Utils.Utils.AddComponent(tile, t.navSurface.GetComponent<NavMeshSurface>());
+            if (t.navmeshEnabled)
+            {
+                NavMeshSurface navmesh = Utils.Utils.AddComponent(tile, t.navSurface.GetComponent<NavMeshSurface>());
+                tileAt.navmesh = navmesh;
+                navMesh.Add(tileAt.key, navmesh);
+            }
             tileAt.tile = next;
             tileAt.worldObject = tile;
             tileAt.renderer = tile.GetComponent<Renderer>();
             tileAt.renderer.material.mainTexture = t.texture;
-            tileAt.navmesh = navmesh;
-            navMesh.Add(tileAt.key, navmesh);
         }
 
         public void UpdateTileAt(float x, float z, int next)

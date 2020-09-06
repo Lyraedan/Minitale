@@ -22,6 +22,7 @@ namespace Minitale.WorldGen
         public GameObject prefab;
         public Texture2D texture;
         [Header("Navmesh")]
+        public bool navmeshEnabled;
         public GameObject navSurface;
         [Header("Animation")]
         public bool animated;

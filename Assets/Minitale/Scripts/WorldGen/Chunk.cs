@@ -144,8 +144,8 @@ namespace Minitale.WorldGen
         {
             float perlinX = (transform.position.x + (x * WorldGenerator.PLANE_SCALE)) / chunkWidth * scale;
             float perlinZ = (transform.position.z + (z * WorldGenerator.PLANE_SCALE)) / chunkHeight * scale;
-            float perlin = Mathf.PerlinNoise(perlinX + seed, perlinZ + seed); //SimplexNoise.SimplexNoise.Generate(perlinX + seed, perlinZ + seed);
-            Debug.Log($"Foliage perlin: {perlin}");
+            float perlin = Mathf.PerlinNoise(perlinX + seed, perlinZ + seed);
+            //Debug.Log($"Foliage perlin: {perlin}");
 
             if (perlin > .2f && perlin <= .4f) AddFoliage(this.tree, x, z, 0, "Tree");
             else if (perlin > .4 && perlin < .45f) AddFoliage(this.grass, x, z, 0, "Grass");
@@ -159,7 +159,6 @@ namespace Minitale.WorldGen
                 GameObject tree = Instantiate(prefab, tile.worldObject.transform.position, Quaternion.identity);
                 tree.name = $"Foilage_{foliageName}";
                 tree.transform.SetParent(tile.worldObject.transform);
-                Debug.Log($"Planted {foliageName}");
             }
         }
 

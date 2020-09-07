@@ -28,6 +28,7 @@ namespace Minitale.WorldGen
         private Dictionary<string, NavMeshSurface> navMesh = new Dictionary<string, NavMeshSurface>();
         private Dictionary<string, TileData> tileCache = new Dictionary<string, TileData>();
 
+
         /// <summary>
         /// Generate the chunks tiles!
         /// </summary>
@@ -35,7 +36,7 @@ namespace Minitale.WorldGen
         {
             for (int x = 0; x < chunkWidth; x++)
             {
-                for(int z = 0; z < chunkHeight; z++)
+                for (int z = 0; z < chunkHeight; z++)
                 {
                     string key = $"Tile_{x}_{z}";
                     int chosen = Random.Range(0, tiles.tiles.Length);
@@ -45,7 +46,7 @@ namespace Minitale.WorldGen
                     tile.name = key;
                     tile.transform.SetParent(transform);
 
-                    if(t.animated)
+                    if (t.animated)
                     {
                         AnimationPlayer animator = tile.AddComponent<AnimationPlayer>();
                         animator.frames = t.frames;
@@ -77,24 +78,8 @@ namespace Minitale.WorldGen
             }
             ApplyBiome();
             Smooth(seed);
-            CmdPlantFoliage();
+            //PlantFoliage();
             RenderChunk(false);
-        }
-
-        public void ClearFoliage()
-        {
-            for(int x = 0; x < chunkWidth; x++)
-            {
-                for(int z = 0; z < chunkHeight; z++)
-                {
-                    TileData tile = GetTileAt(x, z);
-                    foreach(GameObject foliage in tile.foliage)
-                    {
-                        Destroy(foliage);
-                    }
-                    tile.foliage.Clear();
-                }
-            }
         }
 
         public void RenderChunk(bool state)
@@ -120,15 +105,14 @@ namespace Minitale.WorldGen
         /// <summary>
         /// Populate the terrian with trees, grass, flowers
         /// </summary>
-        [Command]
-        public void CmdPlantFoliage()
+        public void PlantFoliage()
         {
-            for(int x = 0; x < chunkWidth; x++)
+            for (int x = 0; x < chunkWidth; x++)
             {
-                for(int z = 0; z < chunkHeight; z++)
+                for (int z = 0; z < chunkHeight; z++)
                 {
                     bool plantTrees = Random.value > 0.85f;
-                    if(plantTrees)
+                    if (plantTrees)
                     {
                         TileData tile = GetTileAt(x, z);
                         if (tile.tile == 0) // Grass
@@ -136,7 +120,7 @@ namespace Minitale.WorldGen
                             GameObject tree = Instantiate(this.tree, tile.worldObject.transform.position, Quaternion.identity);
                             tree.name = "Foilage_Tree";
                             tree.transform.SetParent(tile.worldObject.transform);
-                            tile.foliage.Add(tree);
+
                         }
                     }
 
@@ -146,13 +130,36 @@ namespace Minitale.WorldGen
                         TileData tile = GetTileAt(x, z);
                         if (tile.tile == 0) // Grass
                         {
-                            GameObject grass = Instantiate(this.grass, tile.worldObject.transform.position,Quaternion.Euler(new Vector3(0, Random.Range(0, 360), 0)));
+                            GameObject grass = Instantiate(this.grass, tile.worldObject.transform.position, Quaternion.Euler(new Vector3(0, Random.Range(0, 360), 0)));
                             grass.name = "Foilage_Grass";
                             grass.transform.SetParent(tile.worldObject.transform);
-                            tile.foliage.Add(grass);
+
                         }
                     }
                 }
+            }
+        }
+
+        public void PlantFoliage(int x, int z, int seed)
+        {
+            float perlinX = (transform.position.x + (x * WorldGenerator.PLANE_SCALE)) / chunkWidth * scale;
+            float perlinZ = (transform.position.z + (z * WorldGenerator.PLANE_SCALE)) / chunkHeight * scale;
+            float perlin = Mathf.PerlinNoise(perlinX + seed, perlinZ + seed); //SimplexNoise.SimplexNoise.Generate(perlinX + seed, perlinZ + seed);
+            Debug.Log($"Foliage perlin: {perlin}");
+
+            if (perlin > .2f && perlin <= .4f) AddFoliage(this.tree, x, z, 0, "Tree");
+            else if (perlin > .4 && perlin < .45f) AddFoliage(this.grass, x, z, 0, "Grass");
+        }
+
+        void AddFoliage(GameObject prefab, int x, int z, int plantOnID, string foliageName)
+        {
+            TileData tile = GetTileAt(x, z);
+            if (tile.tile == plantOnID)
+            {
+                GameObject tree = Instantiate(prefab, tile.worldObject.transform.position, Quaternion.identity);
+                tree.name = $"Foilage_{foliageName}";
+                tree.transform.SetParent(tile.worldObject.transform);
+                Debug.Log($"Planted {foliageName}");
             }
         }
 
@@ -177,6 +184,8 @@ namespace Minitale.WorldGen
                     else if (perlin > 0 && perlin <= .25f) UpdateWorldPrefabs(x, z, 2); // Sand
                     else if (perlin > .25f && perlin <= .6f) UpdateWorldPrefabs(x, z, 0); // Grass
                     else if (perlin > .6f) UpdateWorldPrefabs(x, z, 3, 5f); // Stone
+
+                    PlantFoliage(x, z, seed);
                 }
             }
         }
@@ -187,12 +196,12 @@ namespace Minitale.WorldGen
         public void PlaceSpawns()
         {
             List<Transform> spawns = new List<Transform>();
-            for(int x = 0; x < chunkWidth; x++)
+            for (int x = 0; x < chunkWidth; x++)
             {
-                for(int z = 0; z < chunkHeight; z++)
+                for (int z = 0; z < chunkHeight; z++)
                 {
                     bool placeSpawn = Random.value > 0.7f;
-                    if(placeSpawn)
+                    if (placeSpawn)
                     {
                         TileData tile = GetTileAt(x, z);
                         if (tile.tile == 0) // Grass
@@ -212,14 +221,14 @@ namespace Minitale.WorldGen
             }
 
             // No spawns were made?!
-            if(spawns.Count < 1)
+            if (spawns.Count < 1)
             {
                 for (int x = 0; x < chunkWidth; x++)
                 {
                     for (int z = 0; z < chunkHeight; z++)
                     {
                         TileData tile = GetTileAt(x, z);
-                        if(tile.tile == 0) // grass
+                        if (tile.tile == 0) // grass
                         {
                             if (tile.worldObject.transform.childCount < 1)
                             {
@@ -286,13 +295,14 @@ namespace Minitale.WorldGen
             tileAt.renderer.material.mainTexture = tiles.tiles[next].texture;
         }
 
-        public TileData GetTileAt(float x, float z) {
+        public TileData GetTileAt(float x, float z)
+        {
             return tileCache[$"Tile_{x}_{z}"];
-        } 
+        }
 
     }
 
-    public class TileData : NetworkBehaviour
+    public class TileData : MonoBehaviour
     {
 
         public GameObject worldObject;
@@ -302,8 +312,6 @@ namespace Minitale.WorldGen
         public new Renderer renderer;
         public string key;
         public NavMeshSurface navmesh;
-
-        public readonly SyncListGameObject foliage = new SyncListGameObject();
 
         public string ToJSON()
         {

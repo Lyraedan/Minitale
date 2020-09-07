@@ -15,7 +15,6 @@ namespace Minitale.WorldGen
 
     [System.Serializable]
     public class Tile {
-
         [Header("Base")]
         public string name;
         public int id;
@@ -24,6 +23,8 @@ namespace Minitale.WorldGen
         [Header("Navmesh")]
         public bool navmeshEnabled;
         public GameObject navSurface;
+        public int score;
+        public bool walkable;
         [Header("Animation")]
         public bool animated;
         public bool randomIndex;

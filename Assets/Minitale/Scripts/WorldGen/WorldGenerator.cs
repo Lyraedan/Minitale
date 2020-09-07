@@ -36,6 +36,14 @@ namespace Minitale.WorldGen
             initTicks = (int)DateTime.UtcNow.Ticks;
             Random.InitState(initTicks);
             if (seed == 0) seed = Random.Range(-100000, 100000);
+
+            for(int x = 0; x < Chunk.chunkWidth; x++)
+            {
+                for(int z = 0; z < Chunk.chunkHeight; z++)
+                {
+                    GenerateChunkAt(x, 0f, z);
+                }
+            }
         }
 
         public void SyncTicks(int oldTicks, int newTicks)

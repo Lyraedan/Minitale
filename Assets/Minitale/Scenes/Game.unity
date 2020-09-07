@@ -1055,6 +1055,16 @@ PrefabInstance:
       propertyPath: initialSpawn
       value: 
       objectReference: {fileID: 794945428}
+    - target: {fileID: 8482467034160821659, guid: 86cbdbfb9ef60c24d90619300f134c9d,
+        type: 3}
+      propertyPath: networkAddress
+      value: 25.78.18.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 8482467034160821659, guid: 86cbdbfb9ef60c24d90619300f134c9d,
+        type: 3}
+      propertyPath: maxConnections
+      value: 20
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 86cbdbfb9ef60c24d90619300f134c9d, type: 3}
 --- !u!54 &9160156859313325496

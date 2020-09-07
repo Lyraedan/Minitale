@@ -37,7 +37,4 @@ namespace Minitale.Utils
             return go.AddComponent<T>().GetCopyOf(toAdd) as T;
         }
     }
-
-    [Serializable]
-    public class SyncListGameObject : SyncList<GameObject> { }
 }

@@ -21,6 +21,8 @@ MonoBehaviour:
     navmeshEnabled: 0
     navSurface: {fileID: 7432785785482041437, guid: 06dbbac88cf62734a921f471061a6ae3,
       type: 3}
+    score: 1
+    walkable: 1
     animated: 0
     randomIndex: 0
     animationSkip: 5
@@ -33,6 +35,8 @@ MonoBehaviour:
     navmeshEnabled: 0
     navSurface: {fileID: 7517381747486027180, guid: b07213d992c3cfb4fb2c99eaa8f7699c,
       type: 3}
+    score: 2
+    walkable: 1
     animated: 1
     randomIndex: 1
     animationSkip: 1
@@ -48,6 +52,8 @@ MonoBehaviour:
     navmeshEnabled: 0
     navSurface: {fileID: 7432785785482041437, guid: 06dbbac88cf62734a921f471061a6ae3,
       type: 3}
+    score: 1
+    walkable: 1
     animated: 0
     randomIndex: 0
     animationSkip: 5
@@ -60,6 +66,8 @@ MonoBehaviour:
     navmeshEnabled: 0
     navSurface: {fileID: 1783385079593498957, guid: 7a370ab7d13feaa4a83ffba1eb2dc30b,
       type: 3}
+    score: 4
+    walkable: 0
     animated: 0
     randomIndex: 0
     animationSkip: 5
@@ -72,6 +80,8 @@ MonoBehaviour:
     navmeshEnabled: 0
     navSurface: {fileID: 5435809724648979897, guid: d1550983a93558c41a07c1671411d050,
       type: 3}
+    score: 3
+    walkable: 1
     animated: 1
     randomIndex: 1
     animationSkip: 1

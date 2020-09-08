@@ -4,6 +4,7 @@
 //
 
 
+using Mirror;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -13,7 +14,7 @@ using UnityEngine.Audio;
 
 namespace DigitalRuby.RainMaker
 {
-    public class BaseRainScript : MonoBehaviour
+    public class BaseRainScript : NetworkBehaviour
     {
         [Tooltip("Camera the rain should hover over, defaults to main camera")]
         public Camera Camera;
@@ -35,7 +36,7 @@ namespace DigitalRuby.RainMaker
 
         [Tooltip("Intensity of rain (0-1)")]
         [Range(0.0f, 1.0f)]
-        public float RainIntensity;
+        [SyncVar] public float RainIntensity;
 
         [Tooltip("Rain particle system")]
         public ParticleSystem RainFallParticleSystem;
@@ -48,13 +49,13 @@ namespace DigitalRuby.RainMaker
 
         [Tooltip("The threshold for intensity (0 - 1) at which mist starts to appear")]
         [Range(0.0f, 1.0f)]
-        public float RainMistThreshold = 0.5f;
+        [SyncVar] public float RainMistThreshold = 0.5f;
 
         [Tooltip("Wind looping clip")]
         public AudioClip WindSound;
 
         [Tooltip("Wind sound volume modifier, use this to lower your sound if it's too loud.")]
-        public float WindSoundVolumeModifier = 0.5f;
+        [SyncVar] public float WindSoundVolumeModifier = 0.5f;
 
         [Tooltip("Wind zone that will affect and follow the rain")]
         public WindZone WindZone;
@@ -66,7 +67,7 @@ namespace DigitalRuby.RainMaker
         public Vector2 WindChangeInterval = new Vector2(5.0f, 30.0f);
 
         [Tooltip("Whether wind should be enabled.")]
-        public bool EnableWind = true;
+        [SyncVar] public bool EnableWind = true;
 
         protected LoopingAudioSource audioSourceRainLight;
         protected LoopingAudioSource audioSourceRainMedium;
@@ -77,8 +78,8 @@ namespace DigitalRuby.RainMaker
         protected Material rainExplosionMaterial;
         protected Material rainMistMaterial;
 
-        private float lastRainIntensityValue = -1.0f;
-        private float nextWindTime;
+        [SyncVar] private float lastRainIntensityValue = -1.0f;
+        [SyncVar] private float nextWindTime;
 
         private void UpdateWind()
         {

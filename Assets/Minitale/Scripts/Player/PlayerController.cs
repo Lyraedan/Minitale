@@ -8,7 +8,6 @@ namespace Minitale.Player
 {
     public class PlayerController : CameraControl
     {
-
         public KeyCode Up = KeyCode.W;
         public KeyCode Left = KeyCode.A;
         public KeyCode Down = KeyCode.S;

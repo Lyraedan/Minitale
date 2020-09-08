@@ -77,7 +77,6 @@ namespace Minitale.WorldGen
             }
             ApplyBiome();
             Smooth(seed);
-            //PlantFoliage();
             RenderChunk(false);
         }
 
@@ -99,44 +98,6 @@ namespace Minitale.WorldGen
         public void ApplyBiome()
         {
 
-        }
-
-        /// <summary>
-        /// Populate the terrian with trees, grass, flowers
-        /// </summary>
-        public void PlantFoliage()
-        {
-            for (int x = 0; x < chunkWidth; x++)
-            {
-                for (int z = 0; z < chunkHeight; z++)
-                {
-                    bool plantTrees = Random.value > 0.85f;
-                    if (plantTrees)
-                    {
-                        TileData tile = GetTileAt(x, z);
-                        if (tile.tile == 0) // Grass
-                        {
-                            GameObject tree = Instantiate(this.tree, tile.worldObject.transform.position, Quaternion.identity);
-                            tree.name = "Foilage_Tree";
-                            tree.transform.SetParent(tile.worldObject.transform);
-
-                        }
-                    }
-
-                    bool plantGrass = Random.value > 0.5 && Random.value <= 0.85;
-                    if (plantGrass)
-                    {
-                        TileData tile = GetTileAt(x, z);
-                        if (tile.tile == 0) // Grass
-                        {
-                            GameObject grass = Instantiate(this.grass, tile.worldObject.transform.position, Quaternion.Euler(new Vector3(0, Random.Range(0, 360), 0)));
-                            grass.name = "Foilage_Grass";
-                            grass.transform.SetParent(tile.worldObject.transform);
-
-                        }
-                    }
-                }
-            }
         }
 
         public void PlantFoliage(int x, int z, int seed)
@@ -182,7 +143,6 @@ namespace Minitale.WorldGen
                     else if (perlin > 0 && perlin <= .25f) UpdateWorldPrefabs(x, z, 2); // Sand
                     else if (perlin > .25f && perlin <= .6f) UpdateWorldPrefabs(x, z, 0); // Grass
                     else if (perlin > .6f) UpdateWorldPrefabs(x, z, 3, 5f); // Stone
-
                     PlantFoliage(x, z, seed);
                 }
             }

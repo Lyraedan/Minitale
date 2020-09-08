@@ -90,7 +90,7 @@ namespace SimplexNoise
         /// </summary>
         /// <param name="x"></param>
         /// <returns></returns>
-        private static float Generate(float x)
+        public static float Generate(float x)
         {
             var i0 = FastFloor(x);
             var i1 = i0 + 1;

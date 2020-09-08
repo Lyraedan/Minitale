@@ -1,0 +1,31 @@
+My name is John Marine, and I'd like to thank you for downloading this product!  Let me tell you more about this package.
+
+Need voxel characters for your games or other projects?  If so, I can help you (or at least try)!  Here are nine voxel characters I created for you to freely use in your projects.  Each model is in a decent size matrix of 16 units long, 16 units wide, and 32 units high.  The original intent was to make them Minecraft entities.  Or at least, I used Minecraft as my basis for the dimensions of my characters.  I then created characters from a single character base.  Before I developed the characters further, I felt the need to offer my first set of voxel characters for free before I went ahead and modified my original creations- namely the heads of the characters.  Creating these characters involved me studying various other blocky characters and making my own model to serve as the basis of my voxel character models.  I then used my own imagination to create a set of characters.
+
+The base character I used for my voxel model characters is on the far left with the white tank top and the jeans.  The other eight characters all were created from the same base model but with variations in outfits and hair.
+
+Here is a look at the characters from left to right:
+* base model - wears a white tank top, blue jeans, and black shoes.
+* a teenage girl with a bright scarf, black top, and indigo jeans tucked into brown boots.
+* a middle-aged woman in a sweater over a blouse, skirt, and pumps.
+* a man in an open shirt with a T-shirt underneat and jeans tucked into dark brown boots.
+* a young adult lady in a yellow dress and hot pink pumps.
+* a Black male in a football jersey, dark blue jeans, and orange lug boots.
+* a man in overalls and wears a baseball cap.
+* a teenage boy in a varsity jacket, a T-shirt, blue jeans, and brown shoes.
+* a college-age girl in a sporty tank top, and yoga legging pants tucked into sheepskin boots.
+
+All characters were created using the free program MagicaVoxel.  Search for it online as it is a solid program for creating voxel models.  This package is provided so you can place these characters in any number of applications and projects.'
+
+This IS a Starter Kit, so some assembly is required if you really want to utilize my models.  All nine of these characters are static models.  So you will need to do some editing if you want to use them further.  Unlike my Voxel Vehicle Starter Pack, only the raw VOX models made in MagicaVoxel are offered.  There are no other formats included in this package.  You can export the models to other formats through MagicaVoxel or (another free voxel program) VoxelShop.  Exporting to DAE or OBJ will allow you to use them further in programs like Blender (also free).  You may even want to think about how to separate the models into individual objects for easier rigging.
+
+If you want to make your own models, you can use the base model and color up your own models and add your own touches.  As of November 30, 2016; I have made over 43 characters using this base model.  What you are getting with this package is my first nine (including the base character) characters before making more voxel model characters.
+
+As usual, I'd love to know if you are using my work in your projects.  So let me know what you are working on if you love my work!  I want to thank everyone who finds my work enjoyable.  Let me see what kind of work you are doing to enhance the scope of my characters.
+
+
+Thank you for reading!  Happy programming!  :)
+
+* http://www.facebook.com/TheJohnMarine
+* http://johnscreativespace.blogspot.com
+* http://johnmarinedesigns.weebly.com

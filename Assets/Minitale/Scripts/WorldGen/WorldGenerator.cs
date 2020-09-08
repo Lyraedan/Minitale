@@ -17,6 +17,8 @@ namespace Minitale.WorldGen
         public static Dictionary<string, GameObject> chunks = new Dictionary<string, GameObject>();
         [SyncVar(hook = nameof(SyncSeed))] public int seed = 0;
         [ReadOnly] [SyncVar(hook = nameof(SyncTicks))] public int initTicks = 0;
+        [SyncVar] public int rainDensity = 0;
+        [SyncVar] public int timeOfDay = 0;
 
         public static WorldGenerator generator;
 
@@ -55,6 +57,7 @@ namespace Minitale.WorldGen
          {
             seed = newSeed;
          }
+
 
         public void GenerateChunkAt(Vector3 location)
         {

@@ -28,7 +28,6 @@ namespace Minitale.WorldGen
         private Dictionary<string, NavMeshSurface> navMesh = new Dictionary<string, NavMeshSurface>();
         private Dictionary<string, TileData> tileCache = new Dictionary<string, TileData>();
 
-
         /// <summary>
         /// Generate the chunks tiles!
         /// </summary>
@@ -64,7 +63,7 @@ namespace Minitale.WorldGen
                     Renderer tileRenderer = tile.GetComponent<Renderer>();
                     tileRenderer.material.mainTexture = t.texture;
 
-                    TileData data = new TileData();
+                    TileData data = tile.AddComponent<TileData>();
                     data.tile = chosen;
                     data.renderer = tileRenderer;
                     data.prefab = t.prefab;

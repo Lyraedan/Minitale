@@ -8,15 +8,11 @@ namespace Minitale.Player
     {
         private Vector3 position;
 
-        // Start is called before the first frame update
         public void Init()
         {
             position = transform.position;
-            //GenerateChunksAroundMe();
-            //MakeChunksAroundMeVisible();
         }
 
-        // Update is called once per frame
         public void HandleWorld()
         {
             if (Vector3.Distance(position, transform.position) < 1f) return;

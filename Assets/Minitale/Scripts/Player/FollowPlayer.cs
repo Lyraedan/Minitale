@@ -18,6 +18,6 @@ public class FollowPlayer : NetworkBehaviour
         }
 
         if (player != null)
-            transform.position = new Vector3(player.transform.position.x, yOffset, player.transform.position.z);
+            transform.position = new Vector3(player.transform.position.x, transform.position.y + yOffset, player.transform.position.z);
     }
 }

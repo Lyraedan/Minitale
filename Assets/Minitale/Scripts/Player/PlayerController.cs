@@ -1,4 +1,5 @@
-﻿using Minitale.WorldGen;
+﻿using Lyraedan.MirrorChat;
+using Minitale.WorldGen;
 using Mirror;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,13 +9,19 @@ namespace Minitale.Player
 {
     public class PlayerController : CameraControl
     {
+        [Header("Controls")]
         public KeyCode Up = KeyCode.W;
         public KeyCode Left = KeyCode.A;
         public KeyCode Down = KeyCode.S;
         public KeyCode Right = KeyCode.D;
+        public KeyCode sprint = KeyCode.LeftShift;
 
+        [Header("Player properties")]
         public float movementSpeed = 15f;
+        public float sprintingSpeed = 30f;
         public float rotationSpeed = 15f;
+
+        private bool sprinting = false;
 
         // Start is called before the first frame update
         private void Start()
@@ -55,12 +62,14 @@ namespace Minitale.Player
 
         private void Move()
         {
+            sprinting = Input.GetKeyDown(sprint);
+
             Vector3 dir = new Vector3(0, 0, 0);
 
             dir.x = Input.GetAxis("Horizontal");
             dir.z = Input.GetAxis("Vertical");
 
-            transform.Translate(dir * movementSpeed * Time.deltaTime);
+            transform.Translate(dir * (sprinting ? sprintingSpeed : movementSpeed) * Time.deltaTime);
 
             if(!Input.GetMouseButton(0))
                 RotatePlayer();

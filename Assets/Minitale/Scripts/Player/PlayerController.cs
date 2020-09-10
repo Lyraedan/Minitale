@@ -3,12 +3,15 @@ using Minitale.WorldGen;
 using Mirror;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 namespace Minitale.Player
 {
     public class PlayerController : CameraControl
     {
+        [Header("UI Elements")]
+        public GameObject chat;
         [Header("Controls")]
         public KeyCode Up = KeyCode.W;
         public KeyCode Left = KeyCode.A;
@@ -31,10 +34,12 @@ namespace Minitale.Player
             {
                 Destroy(gameObject.transform.Find("Minimap"));
                 gameObject.tag = "OtherPlayer";
+                Destroy(GetComponent<Chat>()); // Seriously wtf
+
                 DestroyImmediate(this);
                 return;
             }
-            //Camera.main.transform.parent.SetParent(transform);
+
             for (int x = -1; x <= 1; x++)
             {
                 for (int z = -1; z <= 1; z++)
@@ -50,6 +55,21 @@ namespace Minitale.Player
             Init();
             WoWCamera camera = Camera.main.gameObject.AddComponent<WoWCamera>();
             camera.target = transform;
+            SetupChat();
+            GetComponent<Chat>().Send($"<b>{GetComponent<Chat>().username} joined the game!", Color.yellow);
+        }
+
+        void SetupChat()
+        {
+            GameObject chatGO = Instantiate(chat, new Vector3(0, 0, 0), Quaternion.identity);
+            Chat chatInstance = GetComponent<Chat>();
+            chatInstance.username = "User";
+            chatInstance.chatText = chatInstance.GetText(chatGO);
+            chatInstance.inputText = chatInstance.GetInput(chatGO);
+            chatInstance.inputText.onEndEdit.AddListener(delegate
+            {
+                chatInstance.Send();
+            });
         }
 
         [Client]

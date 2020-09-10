@@ -95,6 +95,7 @@ GameObject:
   - component: {fileID: 7997585446242548057}
   - component: {fileID: 518260930534612699}
   - component: {fileID: 3607083301276721860}
+  - component: {fileID: 3148804119816009733}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -242,8 +243,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  ui: {fileID: 1047795934471901222, guid: 39bafc53a36caa44dabcf0054c3699f7, type: 3}
-  chat: {fileID: 4273464998390503380, guid: 6861f419ab037b74699be088b04e2a23, type: 3}
+  chat: {fileID: 7913346059325010877, guid: ada26e1fdd634184eaee15fef5be8458, type: 3}
   Up: 119
   Left: 97
   Down: 115
@@ -252,3 +252,21 @@ MonoBehaviour:
   movementSpeed: 15
   sprintingSpeed: 30
   rotationSpeed: 15
+--- !u!114 &3148804119816009733
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7812428983392374397}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a8ee337a3b8effe46bb78ebb7b4677fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  sendKey: 13
+  chatText: {fileID: 0}
+  inputText: {fileID: 0}
+  username: Player

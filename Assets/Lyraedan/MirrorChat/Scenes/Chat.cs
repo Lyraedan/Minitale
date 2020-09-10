@@ -10,7 +10,7 @@ namespace Lyraedan.MirrorChat {
     {
         public KeyCode sendKey = KeyCode.Return;
         public TMP_Text chatText = null;
-        public TMP_Text inputField = null;
+        public TMP_InputField inputText = null;
         //This needs to be accessed and set outside of the chat script!
         public string username = "Player";
         StringBuilder chat = new StringBuilder();
@@ -22,36 +22,58 @@ namespace Lyraedan.MirrorChat {
             instance = this;
         }
 
+        public override void OnStartAuthority()
+        {
+            Debug.Log($"Started Authority: {hasAuthority}");
+        }
+
         [Client]
         public void Send()
         {
-            Debug.Log($"Sending input = {inputField.text}");
-            if (!Input.GetKeyDown(sendKey))
-            {
-                Debug.LogError("Wrong key");
-                return;
-            }
-            string input = inputField.text;
+            if (!Input.GetKeyDown(sendKey)) return;
+            string input = inputText.text;
             if (string.IsNullOrEmpty(input) || string.IsNullOrWhiteSpace(input))
             {
                 Debug.LogError("Input is empty or whitespace!");
                 return;
             }
             string message = $"<b>[{username}]:</b> {input}";
-            CmdSendMessageToUsers(message);
-            inputField.text = string.Empty;
+            inputText.text = string.Empty;
+            Debug.Log($"Sending message: {message}");
+            CmdSend(message, Color.white);
+        }
+
+        [Client]
+        public void Send(string message, Color col)
+        {
+            string msg = $"{message}";
+            inputText.text = string.Empty;
+            CmdSend(message, col);
         }
 
         [Command]
-        public void CmdSendMessageToUsers(string message)
+        public void CmdSend(string message, Color col)
         {
-            RpcRecieveMessage(message);
+            Debug.Log($"Issuing command to send to users {message}");
+            RpcSend(message, col);
         }
 
-        public void RpcRecieveMessage(string message)
+        [ClientRpc]
+        public void RpcSend(string message, Color col)
         {
             chat.Append($"{message}\n");
+            chatText.color = col;
             chatText.text = chat.ToString();
+        }
+
+        public TMP_Text GetText(GameObject owner)
+        {
+            return owner.transform.Find("Canvas").Find("Panel").Find("Scroll View").Find("Viewport").Find("Text (TMP)").GetComponent<TMP_Text>();
+        }
+
+        public TMP_InputField GetInput(GameObject owner)
+        {
+            return owner.transform.Find("Canvas").Find("Panel").Find("InputField (TMP)").GetComponent<TMP_InputField>();
         }
     }
 }

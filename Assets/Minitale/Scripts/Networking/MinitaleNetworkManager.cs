@@ -1,4 +1,5 @@
-﻿using Minitale.WorldGen;
+﻿using Lyraedan.MirrorChat;
+using Minitale.WorldGen;
 using Mirror;
 using UnityEngine;
 
@@ -29,6 +30,9 @@ namespace Minitale.Networking
             {
                 Camera.main.transform.parent.SetParent(null);
             }
+            Chat chat = GameObject.FindGameObjectWithTag("Player").GetComponent<Chat>();
+            chat.Send($"User {conn.connectionId} has left the server!", "#FFFF00");
+
             Debug.Log($"User left the server {conn.connectionId}");
             base.OnServerDisconnect(conn);
         }

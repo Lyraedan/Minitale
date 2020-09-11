@@ -8,18 +8,12 @@ using UnityEngine.UI;
 namespace Lyraedan.MirrorChat {
     public class Chat : NetworkBehaviour
     {
+        public bool highlightHost = true;
         public KeyCode sendKey = KeyCode.Return;
         public TMP_Text chatText = null;
         public TMP_InputField inputText = null;
         public string username = "Player";
         private static event Action<string> onMessage;
-
-        public static Chat instance;
-
-        private void Start()
-        {
-            instance = this;
-        }
 
         public override void OnStartAuthority()
         {
@@ -43,7 +37,10 @@ namespace Lyraedan.MirrorChat {
             }
             string message = $"<b>[{username}]:</b> {input}";
             inputText.text = string.Empty;
-            Debug.Log($"Sending message: {message}");
+            if(highlightHost)
+            {
+                message = (netIdentity.isServer ? $"<color=#40E0D0>{message}</color>" : message);
+            }
             CmdSend(message);
         }
 

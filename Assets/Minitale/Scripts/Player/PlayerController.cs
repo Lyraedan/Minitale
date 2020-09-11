@@ -34,7 +34,7 @@ namespace Minitale.Player
             {
                 Destroy(gameObject.transform.Find("Minimap"));
                 gameObject.tag = "OtherPlayer";
-                Destroy(GetComponent<Chat>()); // Seriously wtf
+                //Destroy(GetComponent<Chat>()); // Seriously wtf
 
                 DestroyImmediate(this);
                 return;
@@ -56,14 +56,14 @@ namespace Minitale.Player
             WoWCamera camera = Camera.main.gameObject.AddComponent<WoWCamera>();
             camera.target = transform;
             SetupChat();
-            GetComponent<Chat>().Send($"<b>{GetComponent<Chat>().username} joined the game!", Color.yellow);
+            GetComponent<Chat>().Send($"<b>{GetComponent<Chat>().username} joined the game!", "#FFFF00");
         }
 
         void SetupChat()
         {
             GameObject chatGO = Instantiate(chat, new Vector3(0, 0, 0), Quaternion.identity);
             Chat chatInstance = GetComponent<Chat>();
-            chatInstance.username = "User";
+            chatInstance.username = $"User_{netIdentity.netId}";
             chatInstance.chatText = chatInstance.GetText(chatGO);
             chatInstance.inputText = chatInstance.GetInput(chatGO);
             chatInstance.inputText.onEndEdit.AddListener(delegate

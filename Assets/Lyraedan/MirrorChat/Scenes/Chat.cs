@@ -11,9 +11,8 @@ namespace Lyraedan.MirrorChat {
         public KeyCode sendKey = KeyCode.Return;
         public TMP_Text chatText = null;
         public TMP_InputField inputText = null;
-        //This needs to be accessed and set outside of the chat script!
         public string username = "Player";
-        StringBuilder chat = new StringBuilder();
+        private static event Action<string> onMessage;
 
         public static Chat instance;
 
@@ -24,7 +23,12 @@ namespace Lyraedan.MirrorChat {
 
         public override void OnStartAuthority()
         {
-            Debug.Log($"Started Authority: {hasAuthority}");
+            onMessage += UpdateChat;
+        }
+
+        void UpdateChat(string message)
+        {
+            chatText.text += message;
         }
 
         [Client]
@@ -40,30 +44,27 @@ namespace Lyraedan.MirrorChat {
             string message = $"<b>[{username}]:</b> {input}";
             inputText.text = string.Empty;
             Debug.Log($"Sending message: {message}");
-            CmdSend(message, Color.white);
+            CmdSend(message);
         }
 
         [Client]
-        public void Send(string message, Color col)
+        public void Send(string message, string col = "#FF0000")
         {
-            string msg = $"{message}";
+            string msg = $"<color={col}>{message}</color>";
             inputText.text = string.Empty;
-            CmdSend(message, col);
+            CmdSend(msg);
         }
 
         [Command]
-        public void CmdSend(string message, Color col)
+        public void CmdSend(string message)
         {
-            Debug.Log($"Issuing command to send to users {message}");
-            RpcSend(message, col);
+            RpcSend(message);
         }
 
         [ClientRpc]
-        public void RpcSend(string message, Color col)
+        public void RpcSend(string message)
         {
-            chat.Append($"{message}\n");
-            chatText.color = col;
-            chatText.text = chat.ToString();
+            onMessage?.Invoke($"{message}\n");
         }
 
         public TMP_Text GetText(GameObject owner)

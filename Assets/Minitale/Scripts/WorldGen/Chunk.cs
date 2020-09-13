@@ -119,6 +119,8 @@ namespace Minitale.WorldGen
                 GameObject tree = Instantiate(prefab, tile.worldObject.transform.position, Quaternion.identity);
                 tree.name = $"Foilage_{foliageName}";
                 tree.transform.SetParent(tile.worldObject.transform);
+                if (isServer)
+                    NetworkServer.Spawn(tree);
             }
         }
 

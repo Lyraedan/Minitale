@@ -20,10 +20,10 @@ RenderSettings:
   m_FogDensity: 0.006
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
-  m_AmbientSkyColor: {r: 0.212, g: 0.227, b: 0.259, a: 1}
+  m_AmbientSkyColor: {r: 0.088388346, g: 0.088388346, b: 0.088388346, a: 1}
   m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
-  m_AmbientIntensity: 1
+  m_AmbientIntensity: 0.13
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
   m_SkyboxMaterial: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
@@ -52,7 +52,7 @@ LightmapSettings:
     m_AlbedoBoost: 1
     m_EnvironmentLightingMode: 0
     m_EnableBakedLightmaps: 1
-    m_EnableRealtimeLightmaps: 0
+    m_EnableRealtimeLightmaps: 1
   m_LightmapEditorSettings:
     serializedVersion: 12
     m_Resolution: 2
@@ -291,6 +291,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Day and Night Controller
       objectReference: {fileID: 0}
+    - target: {fileID: 190586, guid: 1dce2846dc915b44ea1a12401fe517e1, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 456198, guid: 1dce2846dc915b44ea1a12401fe517e1, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -337,7 +341,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11431738, guid: 1dce2846dc915b44ea1a12401fe517e1, type: 3}
       propertyPath: currentTime
-      value: 0.125
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 11431738, guid: 1dce2846dc915b44ea1a12401fe517e1, type: 3}
       propertyPath: showUI
@@ -347,6 +351,10 @@ PrefabInstance:
       propertyPath: SecondsInAFullDay
       value: 600
       objectReference: {fileID: 0}
+    - target: {fileID: 11431738, guid: 1dce2846dc915b44ea1a12401fe517e1, type: 3}
+      propertyPath: directionalLight
+      value: 
+      objectReference: {fileID: 710320523}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1dce2846dc915b44ea1a12401fe517e1, type: 3}
 --- !u!1001 &604688302
@@ -474,6 +482,12 @@ MonoBehaviour:
   _useTrigger: 0
   _roomName: Global
   _priority: -2
+--- !u!108 &710320523 stripped
+Light:
+  m_CorrespondingSourceObject: {fileID: 10851780, guid: 1dce2846dc915b44ea1a12401fe517e1,
+    type: 3}
+  m_PrefabInstance: {fileID: 586934640}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &758620804
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -819,6 +833,28 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 39bafc53a36caa44dabcf0054c3699f7, type: 3}
+--- !u!1 &924661178 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8644085973844063947, guid: 8a412a5c2a8f39e43bfd44d2e4429f5a,
+    type: 3}
+  m_PrefabInstance: {fileID: 758620804}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &924661179
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 924661178}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sceneId: 413954711
+  serverOnly: 0
+  m_AssetId: 8a412a5c2a8f39e43bfd44d2e4429f5a
+  hasSpawned: 0
 --- !u!1 &1133131056 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 174068, guid: 1dce2846dc915b44ea1a12401fe517e1,
@@ -1385,7 +1421,7 @@ PrefabInstance:
       objectReference: {fileID: 9160156860280728945}
     - target: {fileID: 11437536, guid: 69b40ef7ee16c834c844b3fa26e0fdda, type: 3}
       propertyPath: RainIntensity
-      value: 0.075
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 69b40ef7ee16c834c844b3fa26e0fdda, type: 3}

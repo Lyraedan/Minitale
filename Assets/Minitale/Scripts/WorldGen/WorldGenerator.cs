@@ -76,6 +76,8 @@ namespace Minitale.WorldGen
 
             Chunk c = chunk.GetComponent<Chunk>();
             c.GenerateChunk(seed);
+            if(isServer)
+                NetworkServer.Spawn(chunk);
             if (x == 0 && z == 0) c.PlaceSpawns();
         }
 

@@ -9,6 +9,8 @@ TagManager:
   - SpawnPoint
   - OtherPlayer
   - MenuCamera
+  - Breakable
+  - Destructable
   layers:
   - Default
   - TransparentFX

@@ -31,6 +31,7 @@ namespace Minitale.WorldGen
         /// <summary>
         /// Generate the chunks tiles!
         /// </summary>
+        [ServerCallback]
         public void GenerateChunk(int seed)
         {
             for (int x = 0; x < chunkWidth; x++)
@@ -73,6 +74,7 @@ namespace Minitale.WorldGen
                     data.navmesh = navmesh;
 
                     tileCache.Add(key, data);
+                    NetworkServer.Spawn(tile);
                 }
             }
             ApplyBiome();
@@ -116,11 +118,10 @@ namespace Minitale.WorldGen
             TileData tile = GetTileAt(x, z);
             if (tile.tile == plantOnID)
             {
-                GameObject tree = Instantiate(prefab, tile.worldObject.transform.position, Quaternion.identity);
-                tree.name = $"Foilage_{foliageName}";
-                tree.transform.SetParent(tile.worldObject.transform);
-                if (isServer)
-                    NetworkServer.Spawn(tree);
+                GameObject foliage = Instantiate(prefab, tile.worldObject.transform.position, Quaternion.identity);
+                foliage.name = $"Foilage_{foliageName}";
+                foliage.transform.SetParent(tile.worldObject.transform);
+                NetworkServer.Spawn(foliage);
             }
         }
 
@@ -211,12 +212,14 @@ namespace Minitale.WorldGen
         /// <param name="z">Tile Z coordinate</param>
         /// <param name="next">The ID of the next tile</param>
         /// <param name="yOffset">the Y offset</param>
+        [ServerCallback]
         public void UpdateWorldPrefabs(float x, float z, int next, float yOffset = 0f)
         {
             TileData tileAt = GetTileAt(x, z);
             Tile t = tiles.tiles[next];
             GameObject spawn = t.prefab;
             navMesh.Remove(tileAt.key);
+            NetworkServer.Destroy(tileAt.worldObject);
             Destroy(tileAt.worldObject);
             Vector3 placeAt = new Vector3(tileAt.position.x, tileAt.position.y + yOffset, tileAt.position.z);
             GameObject tile = Instantiate(spawn, placeAt, Quaternion.identity);
@@ -240,6 +243,7 @@ namespace Minitale.WorldGen
             tileAt.worldObject = tile;
             tileAt.renderer = tile.GetComponent<Renderer>();
             tileAt.renderer.material.mainTexture = t.texture;
+            NetworkServer.Spawn(tile);
         }
 
         /// <summary>

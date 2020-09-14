@@ -1,6 +1,7 @@
 ﻿using Lyraedan.MirrorChat;
 using Minitale.WorldGen;
 using Mirror;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -29,7 +30,7 @@ namespace Minitale.Player
         // Start is called before the first frame update
         private void Start()
         {
-
+            var start = DateTime.UtcNow;
             if (!hasAuthority)
             {
                 Destroy(gameObject.transform.Find("Minimap"));
@@ -47,7 +48,7 @@ namespace Minitale.Player
                 }
             }
             GameObject[] spawnPoints = GameObject.FindGameObjectsWithTag("SpawnPoint");
-            int chosen = Random.Range(0, spawnPoints.Length);
+            int chosen = UnityEngine.Random.Range(0, spawnPoints.Length);
             Vector3 spawn = spawnPoints[chosen].transform.position;
             gameObject.transform.position = spawn;
             Init();
@@ -57,6 +58,7 @@ namespace Minitale.Player
             SetupChat();
             GetComponent<Chat>().chatText.text = string.Empty;
             GetComponent<Chat>().Send($"<b>{GetComponent<Chat>().username} joined the game!", "#FFFF00");
+            Debug.Log($"<color=#00FFFF>PlayerController->Start:</color> <color=#00FF00>{(DateTime.UtcNow - start).TotalMilliseconds}ms</color>");
         }
 
         void SetupChat()
@@ -66,6 +68,8 @@ namespace Minitale.Player
             chatInstance.username = $"User_{netIdentity.netId}";
             chatInstance.chatText = chatInstance.GetText(chatGO);
             chatInstance.inputText = chatInstance.GetInput(chatGO);
+            chatInstance.channelDisplay = chatInstance.GetChannelDisplay(chatGO);
+            chatInstance.channelDisplay.text = $"<color=#00FF00>Channel: {chatInstance.currentlyActiveChannel.name}</color>";
             chatInstance.inputText.onEndEdit.AddListener(delegate
             {
                 chatInstance.Send();

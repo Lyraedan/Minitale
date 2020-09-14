@@ -7,6 +7,9 @@ namespace Minitale.Utils
 {
     public static class Utils
     {
+
+        public static bool LogMS = false;
+
         public static T GetCopyOf<T>(this Component comp, T other) where T : Component
         {
             Type type = comp.GetType();
@@ -35,6 +38,12 @@ namespace Minitale.Utils
         public static T AddComponent<T>(this GameObject go, T toAdd) where T : Component
         {
             return go.AddComponent<T>().GetCopyOf(toAdd) as T;
+        }
+
+        public static void LogFunctionStart(string functionName)
+        {
+            var start = DateTime.UtcNow;
+            Debug.Log($"<color=#00FFFF>{functionName}:</color> <color=#00FF00>{(DateTime.UtcNow - start).TotalMilliseconds}ms</color>");
         }
     }
 }

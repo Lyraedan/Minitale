@@ -368,6 +368,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: DissonanceSetup
       objectReference: {fileID: 0}
+    - target: {fileID: 1948977645079602, guid: 1264c01c7f8182e47ac9f784af03d895, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4243346496773318, guid: 1264c01c7f8182e47ac9f784af03d895, type: 3}
       propertyPath: m_LocalPosition.x
       value: 3.3225825

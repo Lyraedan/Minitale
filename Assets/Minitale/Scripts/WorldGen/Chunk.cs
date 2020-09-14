@@ -2,6 +2,7 @@
 using Minitale.WorldGen;
 using Mirror;
 using NaughtyAttributes;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -34,12 +35,13 @@ namespace Minitale.WorldGen
         [ServerCallback]
         public void GenerateChunk(int seed)
         {
+            var start = DateTime.UtcNow;
             for (int x = 0; x < chunkWidth; x++)
             {
                 for (int z = 0; z < chunkHeight; z++)
                 {
                     string key = $"Tile_{x}_{z}";
-                    int chosen = Random.Range(0, tiles.tiles.Length);
+                    int chosen = UnityEngine.Random.Range(0, tiles.tiles.Length);
                     Tile t = tiles.tiles[chosen];
                     Vector3 spawn = new Vector3(transform.position.x + (x * WorldGenerator.PLANE_SCALE), transform.position.y, transform.position.z + (z * WorldGenerator.PLANE_SCALE));
                     GameObject tile = Instantiate(t.prefab, spawn, Quaternion.identity);
@@ -80,6 +82,7 @@ namespace Minitale.WorldGen
             ApplyBiome();
             Smooth(seed);
             RenderChunk(false);
+            //Debug.Log($"<color=#00FFFF>GenerateChunk:</color> <color=#00FF00>{(DateTime.UtcNow - start).TotalMilliseconds}ms</color>");
         }
 
         public void RenderChunk(bool state)
@@ -161,7 +164,7 @@ namespace Minitale.WorldGen
             {
                 for (int z = 0; z < chunkHeight; z++)
                 {
-                    bool placeSpawn = Random.value > 0.7f;
+                    bool placeSpawn = UnityEngine.Random.value > 0.7f;
                     if (placeSpawn)
                     {
                         TileData tile = GetTileAt(x, z);

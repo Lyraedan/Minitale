@@ -100,7 +100,9 @@ namespace Lyraedan.MirrorChat
         {
             string msg = $"<color={col}>{message}</color>";
             inputText.text = string.Empty;
-            CmdSend(currentlyActiveChannel.name, msg);
+            bool isCommand = CheckCommand(message);
+            if (!isCommand)
+                CmdSend(currentlyActiveChannel.name, msg);
         }
 
         [Command]
@@ -212,6 +214,15 @@ namespace Lyraedan.MirrorChat
             return false;
         }
 
+        public void ExecuteCommand(string command, object[] parameters)
+        {
+            string paramsToPass = string.Empty;
+            foreach(string param in parameters)
+            {
+                paramsToPass += $" {param}";
+            }
+            Send($"/{command}{paramsToPass}");
+        }
         #endregion
 
         #region GETTERS

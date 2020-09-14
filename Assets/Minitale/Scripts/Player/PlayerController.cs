@@ -90,18 +90,21 @@ namespace Minitale.Player
 
         void Interaction()
         {
+            CmdDestroyBreakable();
+        }
+
+        [Command]
+        public void CmdDestroyBreakable()
+        {
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                Debug.Log("Left click");
                 if (Raycast.instance.GetHit().transform == null) return;
-                Debug.Log("Raycasting");
                 if (Raycast.instance.GetHit().collider.gameObject.tag.Equals("Breakable"))
                 {
-                    Debug.Log("Hit breakable");
                     GameObject go = Raycast.instance.GetHit().collider.gameObject;
                     if (Raycast.instance.IsWithinRange(go.transform.position, 15f))
                     {
-                        DestroyObject(go);
+                        go.GetComponent<BreakableObject>().Destroy(isServer);
                     }
                 }
             }
@@ -129,28 +132,6 @@ namespace Minitale.Player
 
             var target = Quaternion.LookRotation(dir, Vector3.up);
             transform.rotation = Quaternion.Slerp(transform.rotation, target, rotationSpeed * Time.deltaTime);
-        }
-
-
-        [Client]
-        public void DestroyObject(NetworkIdentity id)
-        {
-            Debug.Log($"[Client] Destorying object {id}");
-            CmdDestroyObject(id);
-        }
-
-        [Command]
-        public void CmdDestroyObject(NetworkIdentity id)
-        {
-            Debug.Log($"[Command] Destorying object {id}");
-            RpcDestroyObject(id);
-        }
-
-        [ClientRpc]
-        public void RpcDestroyObject(NetworkIdentity id)
-        {
-            Debug.Log($"[RPC] Destorying object {id}");
-            NetworkServer.Destroy(id.gameObject);
         }
     }
 }

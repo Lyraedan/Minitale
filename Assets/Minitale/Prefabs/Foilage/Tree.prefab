@@ -90,6 +90,7 @@ GameObject:
   - component: {fileID: 6970304233504238415}
   - component: {fileID: 1412904040500218743}
   - component: {fileID: 8291959744461457877}
+  - component: {fileID: 7192133503283993626}
   m_Layer: 0
   m_Name: Tree
   m_TagString: Breakable
@@ -138,6 +139,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sceneId: 0
-  serverOnly: 1
+  serverOnly: 0
   m_AssetId: 
   hasSpawned: 0
+--- !u!114 &7192133503283993626
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7777908325632160245}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 20d544fe7e14c1e40a470439e8bce32d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1

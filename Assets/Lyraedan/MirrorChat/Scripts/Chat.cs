@@ -37,13 +37,9 @@ namespace Lyraedan.MirrorChat
         #endregion
 
         #region Init
-        private void Awake()
-        {
-            instance = this;
-        }
-
         public override void OnStartAuthority()
         {
+            instance = this;
             onMessage += UpdateChat;
         }
 
@@ -133,15 +129,15 @@ namespace Lyraedan.MirrorChat
         [ClientRpc]
         public void RpcSend(string channel, string message)
         {
-            if (currentlyActiveChannel.name.Equals(channel))
+            if (instance.currentlyActiveChannel.name.Equals(channel))
             {
                 onMessage?.Invoke($"{message}\n");
-                currentlyActiveChannel.StashMessage(message);
+                instance.currentlyActiveChannel.StashMessage(message);
             }
             else
             {
-                if (!channels.ContainsKey(channel)) CreateChannel(channel, channel);
-                channels[channel].StashMessage(message);
+                if (!instance.channels.ContainsKey(channel)) instance.CreateChannel(channel, channel);
+                instance.channels[channel].StashMessage(message);
             }
         }
 
@@ -252,7 +248,7 @@ namespace Lyraedan.MirrorChat
         }
         #endregion
 
-        #region GETTERS
+        #region Getters
 
         public TMP_Text GetChannelDisplay(GameObject owner)
         {

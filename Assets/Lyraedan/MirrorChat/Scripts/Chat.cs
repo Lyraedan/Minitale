@@ -12,13 +12,14 @@ namespace Lyraedan.MirrorChat
     {
         #region Public vars
         public bool highlightHost = true;
-        public KeyCode sendKey = KeyCode.Return;
-        public TMP_Text channelDisplay;
-        public TMP_Text chatText = null;
-        public TMP_InputField inputText = null;
-        public string username = "Player";
-        public string commandPrefix = "/";
-        public string[] startupChannels = { "Global", "Team", "Whisper" };
+        [Tooltip("What key should be used to send messages from the input box")]public KeyCode sendKey = KeyCode.Return;
+        [HideInInspector] public TMP_Text channelDisplay;
+        [HideInInspector] public TMP_Text chatText = null;
+        [HideInInspector] public TMP_InputField inputText = null;
+        [Tooltip("What should the player appear as in the chat?")] public string username = "Player";
+        [Tooltip("What should the command prefix be? - Default is /")] public string commandPrefix = "/";
+        [Tooltip("What key/token should the chat consider to be used as the whisper trigger? - Private messaging")] public string whisperKey = "Whisper";
+        [Tooltip("What channels should exist on startup?")] public string[] startupChannels = { "Global", "Team", "Whisper" };
         #endregion
 
         #region Static vars
@@ -28,7 +29,7 @@ namespace Lyraedan.MirrorChat
 
         #region Channel vars
         private Dictionary<string, Channel> channels = new Dictionary<string, Channel>();
-        public Channel currentlyActiveChannel;
+        [HideInInspector] public Channel currentlyActiveChannel;
         #endregion
 
         #region Command vars
@@ -41,29 +42,47 @@ namespace Lyraedan.MirrorChat
             instance = this;
         }
 
-        private void Start()
-        {
-            CommandExecutor test = new CommandExecutor("test", (_params) => UpdateChat($"Success! {_params[0]}\n"));
-            RegisterCommand(test);
-        }
-
         public override void OnStartAuthority()
         {
             onMessage += UpdateChat;
+        }
 
-            for(int i = 0; i < startupChannels.Length; i++)
+        public void Setup(GameObject owner, bool defaultSetup = true) 
+        {
+            for (int i = 0; i < startupChannels.Length; i++)
             {
                 string key = startupChannels[i].ToLower();
                 channels.Add(key, new Channel(startupChannels[i]));
 
                 CommandExecutor switchCommand = new CommandExecutor(key, (_params) =>
                 {
-                    SwitchChannel(key);
+                    if (key.Contains(whisperKey))
+                    {
+                        string whisperKey = GetWhisperKey(username, (string)_params[0]);
+                        SwitchChannel(whisperKey);
+                    }
+                    else
+                    {
+                        SwitchChannel(key);
+                    }
                 });
 
                 RegisterCommand(switchCommand);
             }
+
             currentlyActiveChannel = channels[startupChannels[0].ToLower()];
+
+            if(defaultSetup)
+            {
+                chatText = GetText(owner);
+                inputText = GetInput(owner);
+                channelDisplay = GetChannelDisplay(owner);
+                channelDisplay.text = $"<color=#00FF00>Channel: {currentlyActiveChannel.name}</color>";
+                inputText.onEndEdit.AddListener(delegate
+                {
+                    Send();
+                });
+            }
         }
         #endregion
 
@@ -121,6 +140,7 @@ namespace Lyraedan.MirrorChat
             }
             else
             {
+                if (!channels.ContainsKey(channel)) CreateChannel(channel, channel);
                 channels[channel].StashMessage(message);
             }
         }
@@ -155,6 +175,13 @@ namespace Lyraedan.MirrorChat
             {
                 channels.Add(channelKey, new Channel(channelName));
             }
+        }
+
+        public string GetWhisperKey(string sender, string recipient)
+        {
+            string[] names = { sender, recipient };
+            Array.Sort(names, (a, b) => string.Compare(a, b));
+            return $"{whisperKey}_{names[0]}_{names[1]}";
         }
         #endregion
 

@@ -64,7 +64,6 @@ namespace Minitale.WorldGen
             GenerateChunkAt(location.x, location.y, location.z);
         }
 
-        [ServerCallback]
         public void GenerateChunkAt(float x, float y, float z)
         {
             string key = $"Chunk_{x}_{y}_{z}";
@@ -77,7 +76,8 @@ namespace Minitale.WorldGen
 
             Chunk c = chunk.GetComponent<Chunk>();
             c.GenerateChunk(seed);
-            NetworkServer.Spawn(chunk);
+            if (isServer)
+                NetworkServer.Spawn(chunk);
             if (x == 0 && z == 0) c.PlaceSpawns();
         }
 

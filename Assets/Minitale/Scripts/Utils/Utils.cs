@@ -7,9 +7,6 @@ namespace Minitale.Utils
 {
     public static class Utils
     {
-
-        public static bool LogMS = false;
-
         public static T GetCopyOf<T>(this Component comp, T other) where T : Component
         {
             Type type = comp.GetType();

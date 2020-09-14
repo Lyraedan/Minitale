@@ -1,9 +1,11 @@
 ﻿using Lyraedan.MirrorChat;
 using Minitale.WorldGen;
 using Mirror;
+using SimpleJSON;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using TMPro;
 using UnityEngine;
 
@@ -65,15 +67,16 @@ namespace Minitale.Player
         {
             GameObject chatGO = Instantiate(chat, new Vector3(0, 0, 0), Quaternion.identity);
             Chat chatInstance = GetComponent<Chat>();
-            chatInstance.username = $"User_{netIdentity.netId}";
-            chatInstance.chatText = chatInstance.GetText(chatGO);
-            chatInstance.inputText = chatInstance.GetInput(chatGO);
-            chatInstance.channelDisplay = chatInstance.GetChannelDisplay(chatGO);
-            chatInstance.channelDisplay.text = $"<color=#00FF00>Channel: {chatInstance.currentlyActiveChannel.name}</color>";
-            chatInstance.inputText.onEndEdit.AddListener(delegate
-            {
-                chatInstance.Send();
-            });
+            chatInstance.Setup(chatGO);
+            chatInstance.username = GetUsername();
+        }
+
+        string GetUsername()
+        {
+            string json = File.ReadAllText($"{Application.dataPath}/player.json");
+            Debug.Log(json);
+            JSONNode node = JSON.Parse(json);
+            return node[0]["username"];
         }
 
         [Client]
